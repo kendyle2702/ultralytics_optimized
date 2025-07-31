@@ -1156,7 +1156,8 @@ class C3k2Ghost(C2f):
         # Use C3Ghost when c3k=True, otherwise use GhostBottleneck
         if c3k:
             # Create custom C3Ghost that uses GhostConv instead of Conv
-            self.m = nn.ModuleList(GhostC3k(self.c, self.c, 2, shortcut, g) for _ in range(n))
+            # self.m = nn.ModuleList(GhostC3k(self.c, self.c, 2, shortcut, g) for _ in range(n))
+            self.m = nn.ModuleList(C3Ghost(self.c, self.c, 2, shortcut, g) for _ in range(n))
         else:
             self.m = nn.ModuleList(GhostBottleneck(self.c, self.c) for _ in range(n))
 
