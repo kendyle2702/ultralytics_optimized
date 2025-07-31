@@ -1152,7 +1152,7 @@ class C3k2Ghost(C2f):
         # Replace Conv layers with GhostConv in C2f
         self.cv1 = GhostConv(c1, 2 * self.c, 1, 1)
         self.cv2 = GhostConv((2 + n) * self.c, c2, 1)
-        
+
         # Use C3Ghost when c3k=True, otherwise use GhostBottleneck
         if c3k:
             # Create custom C3Ghost that uses GhostConv instead of Conv
@@ -1163,7 +1163,7 @@ class C3k2Ghost(C2f):
 
 class GhostC3k(nn.Module):
     """C3k module using GhostConv instead of Conv."""
-    
+
     def __init__(self, c1: int, c2: int, n: int = 1, shortcut: bool = True, g: int = 1, e: float = 0.5, k: int = 3):
         """
         Initialize GhostC3k module.
@@ -1180,7 +1180,7 @@ class GhostC3k(nn.Module):
         super().__init__()
         c_ = int(c2 * e)  # hidden channels
         self.cv1 = GhostConv(c1, c_, 1, 1)
-        self.cv2 = GhostConv(c1, c_, 1, 1)  
+        self.cv2 = GhostConv(c1, c_, 1, 1)
         self.cv3 = GhostConv(2 * c_, c2, 1)
         self.m = nn.Sequential(*(GhostBottleneck(c_, c_) for _ in range(n)))
 
