@@ -29,23 +29,23 @@ Dự án này cung cấp **4 tài liệu hướng dẫn chi tiết** để giúp
 ### Nếu bạn muốn...
 
 **1️⃣ Hiểu NHANH khả năng tùy chỉnh**
-   → Đọc: `ANALYSIS_SUMMARY.md`
-   ⏱️ Thời gian: 10-15 phút
-   
+→ Đọc: `ANALYSIS_SUMMARY.md`
+⏱️ Thời gian: 10-15 phút
+
 **2️⃣ Bắt đầu trong 5 phút**
-   → Đọc: `RESEARCH_QUICK_START_VI.md`
-   ⏱️ Thời gian: 5 phút
-   💡 Kết quả: Có thể train model đầu tiên
+→ Đọc: `RESEARCH_QUICK_START_VI.md`
+⏱️ Thời gian: 5 phút
+💡 Kết quả: Có thể train model đầu tiên
 
 **3️⃣ Hiểu chi tiết từng thành phần**
-   → Đọc: `CUSTOMIZATION_GUIDE_VI.md`
-   ⏱️ Thời gian: 30-40 phút
-   💡 Kết quả: Nắm vững cách tùy chỉnh sâu
+→ Đọc: `CUSTOMIZATION_GUIDE_VI.md`
+⏱️ Thời gian: 30-40 phút
+💡 Kết quả: Nắm vững cách tùy chỉnh sâu
 
 **4️⃣ Xem code ví dụ thực tế**
-   → Đọc: `PRACTICAL_EXAMPLES.md`
-   ⏱️ Thời gian: 20-30 phút
-   💡 Kết quả: Copy-paste được ngay
+→ Đọc: `PRACTICAL_EXAMPLES.md`
+⏱️ Thời gian: 20-30 phút
+💡 Kết quả: Copy-paste được ngay
 
 ---
 
@@ -57,14 +57,14 @@ Dự án này cung cấp **4 tài liệu hướng dẫn chi tiết** để giúp
 # 1️⃣ Thay Backbone (DỄ)
 backbone:
   - [-1, 1, Conv, [64, 3, 2]]
-  - [-1, 2, C2f, [128, True]]      # ← Thay layer
-  - [-1, 1, SPPF, [256, 5]]        # ← Thay architecture
+  - [-1, 2, C2f, [128, True]] # ← Thay layer
+  - [-1, 1, SPPF, [256, 5]] # ← Thay architecture
 
 # 2️⃣ Thêm Attention vào Neck (TRUNG BÌNH)
 head:
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 4], 1, Concat, [1]]
-  - [-1, 2, C2fAttn, [512, 256, 8]]  # ← Attention module
+  - [-1, 2, C2fAttn, [512, 256, 8]] # ← Attention module
 
 # 3️⃣ Custom Loss Function (KHÓ - nhưng có ví dụ)
 # Xem PRACTICAL_EXAMPLES.md ví dụ 3
@@ -86,13 +86,13 @@ model.train(data="coco8.yaml", epochs=100, batch=16)
 
 ## 📊 Comparison: Các Tài Liệu
 
-| Aspect | SUMMARY | QUICK START | CUSTOMIZATION | EXAMPLES |
-|--------|---------|-------------|---------------|----------|
-| **Độ dài** | 3 trang | 4 trang | 20+ trang | 20+ trang |
-| **Mức độ chi tiết** | Tổng quan | Bề ngoài | Sâu | Rất sâu |
-| **Có code** | Ít | Không | Có | Rất nhiều |
-| **Thích hợp cho** | Người mới | Mọi người | Dev | Developer |
-| **Thời gian đọc** | 10 min | 5 min | 30 min | 25 min |
+| Aspect              | SUMMARY   | QUICK START | CUSTOMIZATION | EXAMPLES  |
+| ------------------- | --------- | ----------- | ------------- | --------- |
+| **Độ dài**          | 3 trang   | 4 trang     | 20+ trang     | 20+ trang |
+| **Mức độ chi tiết** | Tổng quan | Bề ngoài    | Sâu           | Rất sâu   |
+| **Có code**         | Ít        | Không       | Có            | Rất nhiều |
+| **Thích hợp cho**   | Người mới | Mọi người   | Dev           | Developer |
+| **Thời gian đọc**   | 10 min    | 5 min       | 30 min        | 25 min    |
 
 ---
 
@@ -135,13 +135,13 @@ model.train(data="coco8.yaml", epochs=100, batch=16)
 
 ### ✅ Có Thể Tùy Chỉnh
 
-| Thành phần | Độ khó | Ví dụ |
-|-----------|--------|-------|
-| Backbone | ⭐ Dễ | C2f, C3k2, RepConv |
-| Neck | ⭐ Dễ | Upsample, Concat, Attention |
-| Loss | ⭐⭐ TB | v8DetectionLoss, VarifocalLoss |
-| Activation | ⭐ Dễ | ReLU, SiLU, GELU |
-| Modules | ⭐⭐⭐ KHÓ | Custom Conv blocks |
+| Thành phần | Độ khó     | Ví dụ                          |
+| ---------- | ---------- | ------------------------------ |
+| Backbone   | ⭐ Dễ      | C2f, C3k2, RepConv             |
+| Neck       | ⭐ Dễ      | Upsample, Concat, Attention    |
+| Loss       | ⭐⭐ TB    | v8DetectionLoss, VarifocalLoss |
+| Activation | ⭐ Dễ      | ReLU, SiLU, GELU               |
+| Modules    | ⭐⭐⭐ KHÓ | Custom Conv blocks             |
 
 ### 🚫 Không Nên Thay Đổi
 
@@ -219,8 +219,8 @@ pip install tensorboard
 pip install matplotlib seaborn
 
 # Advanced (optional)
-pip install wandb  # For logging
-pip install onnx   # For export
+pip install wandb # For logging
+pip install onnx  # For export
 ```
 
 ### Cấu Trúc Thư Mục Đề Xuất
@@ -254,7 +254,7 @@ Documentation:
   - Main Docs: https://docs.ultralytics.com
   - GitHub: https://github.com/ultralytics/ultralytics
   - Model Hub: https://hub.ultralytics.com
-  
+
 Community:
   - Issues: https://github.com/ultralytics/ultralytics/issues
   - Discussions: https://github.com/ultralytics/ultralytics/discussions
@@ -277,22 +277,29 @@ ultralytics/
 ## ❓ FAQ
 
 ### Q: Phiên bản này có phải YOLO26 không?
+
 **A:** Không, đây là YOLO11 (v8.3.228). YOLO26 chưa tồn tại.
 
 ### Q: Có thể thay backbone độc lập không?
+
 **A:** Có! Chỉ cần sửa file YAML, không cần code.
 
 ### Q: Loss function nào tốt nhất?
+
 **A:** Tùy dataset:
+
 - Cân bằng → v8DetectionLoss (default)
 - Imbalanced → VarifocalLoss
 - Hard samples → FocalLoss
 
 ### Q: Tôi có thể publish code custom không?
+
 **A:** Có! AGPL-3.0 license cho phép nó với điều kiện chia sẻ mã.
 
 ### Q: Cần bao lâu để train?
+
 **A:** Tùy:
+
 - YOLOv11n: ~2 giờ (V100)
 - YOLOv11m: ~5 giờ
 - YOLOv11l: ~10 giờ
@@ -338,7 +345,7 @@ ultralytics/
 ### Option B: Chi Tiết (1 giờ)
 
 1. Đọc: `ANALYSIS_SUMMARY.md` (15 min)
-2. Đọc: `CUSTOMIZATION_GUIDE_VI.md` (40 min)  
+2. Đọc: `CUSTOMIZATION_GUIDE_VI.md` (40 min)
 3. Thực hành: Create custom model
 4. Done! ✅
 
@@ -362,10 +369,12 @@ model.model.info()
 
 # Check FLOPs
 from fvcore.nn import FlopCounterMode
+
 flops = FlopCounterMode(model.model).total()
 
 # Check shapes
 import torch
+
 x = torch.randn(1, 3, 640, 640)
 y = model.model(x)
 print(y.shape)
@@ -373,12 +382,12 @@ print(y.shape)
 
 ### Common Errors
 
-| Error | Solution |
-|-------|----------|
-| Channel mismatch | Kiểm tra output channels phù hợp |
-| Shape error | Verify concatenation layer indices |
-| OOM | Giảm batch size |
-| Loss NaN | Kiểm tra learning rate, data |
+| Error            | Solution                           |
+| ---------------- | ---------------------------------- |
+| Channel mismatch | Kiểm tra output channels phù hợp   |
+| Shape error      | Verify concatenation layer indices |
+| OOM              | Giảm batch size                    |
+| Loss NaN         | Kiểm tra learning rate, data       |
 
 ---
 
@@ -390,7 +399,7 @@ print(y.shape)
 ✅ 6 ví dụ thực tế với code đầy đủ  
 ✅ Templates sẵn dùng  
 ✅ Best practices & tips  
-✅ Hướng dẫn từng bước  
+✅ Hướng dẫn từng bước
 
 ### What You Can Do
 
@@ -398,7 +407,7 @@ print(y.shape)
 ✅ Tạo custom modules  
 ✅ Tối ưu hóa cho dataset của bạn  
 ✅ Viết paper/conference  
-✅ Deploy production models  
+✅ Deploy production models
 
 ### Next Steps
 
@@ -415,6 +424,7 @@ print(y.shape)
 ## ⭐ Để Lại Feedback
 
 Nếu bạn thấy tài liệu này hữu ích:
+
 - Star repo trên GitHub ⭐
 - Chia sẻ với bạn bè 📢
 - Report issues 🐛
@@ -435,6 +445,5 @@ Nếu bạn thấy tài liệu này hữu ích:
 
 - [Analysis Summary](ANALYSIS_SUMMARY.md) - Tổng quan
 - [Quick Start](RESEARCH_QUICK_START_VI.md) - 5 phút
-- [Customization Guide](CUSTOMIZATION_GUIDE_VI.md) - Chi tiết  
+- [Customization Guide](CUSTOMIZATION_GUIDE_VI.md) - Chi tiết
 - [Practical Examples](PRACTICAL_EXAMPLES.md) - Code ví dụ
-
