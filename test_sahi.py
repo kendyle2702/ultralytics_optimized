@@ -1,11 +1,8 @@
-from ultralytics import YOLO
+# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
+
 from IPython.display import Image
-
 from sahi import AutoDetectionModel
-from sahi.predict import get_prediction, get_sliced_prediction, predict
-from sahi.utils.cv import read_image
-from sahi.utils.file import download_from_url
-
+from sahi.predict import get_sliced_prediction
 
 detection_model = AutoDetectionModel.from_pretrained(
     model_type="ultralytics",
