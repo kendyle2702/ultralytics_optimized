@@ -15,9 +15,9 @@ test: images/test # test-dev images (optional) 1610 images
 # Mapping từ VisDrone gốc:
 #   pedestrian (0) + people (1) → person (0)
 #   Tất cả các class khác bỏ qua
-nc: 1  # number of classes
+nc: 1 # number of classes
 names:
-  0: person      # Gộp pedestrian + people thành person
+  0: person # Gộp pedestrian + people thành person
 
 # Class mapping từ VisDrone gốc (10 classes) sang 1 class
 # Original class → New class
@@ -106,20 +106,20 @@ download: |
   # Download and extract dataset
   dir = Path(yaml['path'])
   dir.mkdir(parents=True, exist_ok=True)
-  
+
   urls = [
       f"{ASSETS_URL}/VisDrone2019-DET-train.zip",
       f"{ASSETS_URL}/VisDrone2019-DET-val.zip",
       f"{ASSETS_URL}/VisDrone2019-DET-test-dev.zip",
   ]
-  
+
   for url in urls:
       LOGGER.info(f"Downloading {url}...")
       os.system(f"curl -L {url} -o {dir / Path(url).name}")
       os.system(f"unzip -q {dir / Path(url).name} -d {dir}")
-  
+
   splits = {"VisDrone2019-DET-train": "train", "VisDrone2019-DET-val": "val", "VisDrone2019-DET-test-dev": "test"}
   for folder, split in splits.items():
       visdrone2yolo(dir, split, folder)
-  
+
   LOGGER.info("✅ Dataset conversion completed - Person class only (pedestrian + people merged)!")
