@@ -1,0 +1,125 @@
+# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
+
+# VisDrone dataset - Person Only (Single Class)
+# Chỉ detect person (pedestrian + people merged), bỏ qua tất cả các class khác
+# Documentation: https://docs.ultralytics.com/datasets/detect/visdrone/
+# Example usage: yolo train data=VisDrone-people.yaml
+
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+path: VisDrone # dataset root dir (sử dụng cùng dataset với VisDrone gốc)
+train: images/train # train images (relative to 'path') 6471 images
+val: images/val # val images (relative to 'path') 548 images
+test: images/test # test-dev images (optional) 1610 images
+
+# Classes - Chỉ 1 class: person
+# Mapping từ VisDrone gốc:
+#   pedestrian (0) + people (1) → person (0)
+#   Tất cả các class khác bỏ qua
+nc: 1  # number of classes
+names:
+  0: person      # Gộp pedestrian + people thành person
+
+# Class mapping từ VisDrone gốc (10 classes) sang 1 class
+# Original class → New class
+# 0: pedestrian → 0: person
+# 1: people → 0: person
+# 2-9: IGNORED (không label, không train)
+
+# Download script/URL (optional) ---------------------------------------------------------------------------------------
+download: |
+  import os
+  from pathlib import Path
+  import shutil
+  from ultralytics.utils import LOGGER, ASSETS_URL
+
+  def visdrone2yolo(dir, split, source_name=None):
+      """Convert VisDrone annotations to YOLO format with person class (pedestrian + people merged)."""
+      from PIL import Image
+
+      source_dir = dir / (source_name or f"VisDrone2019-DET-{split}")
+      dest_dir = dir / split
+      dest_dir.mkdir(parents=True, exist_ok=True)
+      (dest_dir / "images").mkdir(parents=True, exist_ok=True)
+      (dest_dir / "labels").mkdir(parents=True, exist_ok=True)
+
+      # Class mapping: chỉ giữ lại pedestrian (0) và people (1), map về 0
+      def map_class(original_class):
+          if original_class in [0, 1]:  # pedestrian, people
+              return 0  # person (gộp cả pedestrian và people)
+          else:
+              return None  # Ignore all other classes
+
+      converted_count = 0
+      skipped_count = 0
+
+      for annotation_file in (source_dir / "annotations").glob("*.txt"):
+          image_file = source_dir / "images" / annotation_file.name.replace(".txt", ".jpg")
+
+          # Read image dimensions
+          with Image.open(image_file) as img:
+              w, h = img.size
+
+          # Convert annotations
+          lines = []
+          with open(annotation_file, "r") as f:
+              for line in f:
+                  parts = line.strip().split(",")
+                  if len(parts) < 8:
+                      continue
+                  
+                  bbox_left, bbox_top, bbox_width, bbox_height = map(int, parts[:4])
+                  score, original_class, truncation, occlusion = map(int, parts[4:8])
+
+                  # Skip ignored regions (class 0 with score 0) and invalid classes
+                  if score == 0 or original_class not in range(1, 11):
+                      continue
+
+                  # Map class (VisDrone uses 1-based indexing, so subtract 1)
+                  original_class = original_class - 1  # Convert to 0-based
+                  new_class = map_class(original_class)
+                  
+                  if new_class is None:
+                      skipped_count += 1
+                      continue
+
+                  converted_count += 1
+
+                  # Convert to YOLO format (normalized center x, y, width, height)
+                  x_center = (bbox_left + bbox_width / 2) / w
+                  y_center = (bbox_top + bbox_height / 2) / h
+                  norm_width = bbox_width / w
+                  norm_height = bbox_height / h
+
+                  # Format: class x_center y_center width height
+                  lines.append(f"{new_class} {x_center:.6f} {y_center:.6f} {norm_width:.6f} {norm_height:.6f}\n")
+
+          # Save YOLO format labels
+          label_file = dest_dir / "labels" / annotation_file.name
+          with open(label_file, "w") as f:
+              f.writelines(lines)
+
+          # Copy image
+          shutil.copy(image_file, dest_dir / "images" / image_file.name)
+
+      LOGGER.info(f"✅ Converted {split} split: {converted_count} person objects (pedestrian + people merged), {skipped_count} other objects skipped")
+
+  # Download and extract dataset
+  dir = Path(yaml['path'])
+  dir.mkdir(parents=True, exist_ok=True)
+  
+  urls = [
+      f"{ASSETS_URL}/VisDrone2019-DET-train.zip",
+      f"{ASSETS_URL}/VisDrone2019-DET-val.zip",
+      f"{ASSETS_URL}/VisDrone2019-DET-test-dev.zip",
+  ]
+  
+  for url in urls:
+      LOGGER.info(f"Downloading {url}...")
+      os.system(f"curl -L {url} -o {dir / Path(url).name}")
+      os.system(f"unzip -q {dir / Path(url).name} -d {dir}")
+  
+  splits = {"VisDrone2019-DET-train": "train", "VisDrone2019-DET-val": "val", "VisDrone2019-DET-test-dev": "test"}
+  for folder, split in splits.items():
+      visdrone2yolo(dir, split, folder)
+  
+  LOGGER.info("✅ Dataset conversion completed - Person class only (pedestrian + people merged)!")
