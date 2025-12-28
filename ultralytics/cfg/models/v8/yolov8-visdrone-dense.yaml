@@ -1,0 +1,82 @@
+# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
+
+# YOLOv8-Visdrone-Dense: Dense connectivity for extreme small object detection
+# Maximum feature reuse with DenseNet-inspired connections
+# Key innovations:
+#   - Dense cross-scale feature connections
+#   - Direct P2->P4 connection (stride 4) - preserves fine details
+#   - Dual attention (Channel + Spatial) on small object scales
+#   - Multiple feature fusion paths
+#   - Optimized for very small objects (< 32x32 pixels)
+
+# Parameters
+nc: 10  # Visdrone classes
+scales: # model compound scaling constants
+  # [depth, width, max_channels]
+  n: [0.33, 0.35, 1024]  # Dense needs more channels
+  s: [0.33, 0.60, 1024]  # Recommended starting point
+  m: [0.67, 0.85, 768]   # Best balance
+  l: [0.80, 1.00, 512]   # Maximum accuracy
+  x: [1.00, 1.25, 512]   # Research use
+
+# YOLOv8-Visdrone-Dense backbone
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, Conv, [64, 3, 2]]   # 0-P1/2
+  - [-1, 1, Conv, [128, 3, 2]]  # 1-P2/4
+  - [-1, 4, C2f, [128, True]]   # 2 Enhanced P2
+  - [-1, 1, Conv, [256, 3, 2]]  # 3-P3/8
+  - [-1, 6, C2f, [256, True]]   # 4
+  - [-1, 1, Conv, [512, 3, 2]]  # 5-P4/16
+  - [-1, 6, C2f, [512, True]]   # 6
+  - [-1, 1, Conv, [1024, 3, 2]] # 7-P5/32
+  - [-1, 3, C2f, [1024, True]]  # 8
+  - [-1, 1, SPPF, [1024, 5]]    # 9 Global context
+
+# YOLOv8-Visdrone-Dense head - Dense FPN with maximum connectivity
+head:
+  # === Top-down pathway ===
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 10
+  - [[-1, 6], 1, Concat, [1]]   # 11 P4_td = P5 + P4_backbone
+  - [-1, 3, C2f, [512]]          # 12 P4_td_processed
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 13
+  - [[-1, 4], 1, Concat, [1]]   # 14 P3_td = P4_td + P3_backbone
+  - [-1, 3, C2f, [256]]          # 15 P3_td_processed
+  
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 16
+  - [[-1, 2], 1, Concat, [1]]   # 17 P2_td = P3_td + P2_backbone
+  - [-1, 3, C2f, [128]]          # 18 P2_td_processed
+
+  # === Dual attention on P2 ===
+  - [-1, 1, ChannelAttention, [128]]  # 19 P2 channel attention
+  - [-1, 1, SpatialAttention, []]     # 20 P2 spatial attention
+  
+  # === Dense bottom-up with cross-scale connections ===
+  # P2 -> P3 dense fusion
+  - [20, 1, Conv, [128, 3, 2]]   # 21 P2 down
+  - [[-1, 15], 1, Concat, [1]]   # 22 Dense: P2_down + P3_td
+  - [-1, 3, C2fAttn, [256]]      # 23 P3 enhanced (detection level)
+  
+  # P3 -> P4 dense fusion
+  - [23, 1, Conv, [256, 3, 2]]   # 24 P3 down
+  - [[-1, 12], 1, Concat, [1]]   # 25 Dense: P3_down + P4_td
+  - [-1, 3, C2f, [512]]          # 26 P4 enhanced
+  
+  # === Innovative: P2->P4 direct connection ===
+  - [20, 1, Conv, [128, 3, 4]]   # 27 P2 direct to P4 scale (stride 4)
+  - [[-1, 26], 1, Concat, [1]]   # 28 Add P2 fine details to P4
+  - [-1, 1, Conv, [512, 1, 1]]   # 29 P4 final fusion
+  
+  # P4 -> P5
+  - [26, 1, Conv, [512, 3, 2]]   # 30 P4 down
+  - [[-1, 9], 1, Concat, [1]]    # 31 P4_down + P5_backbone
+  - [-1, 3, C2f, [1024, True]]   # 32 P5 final
+
+  # === Attention enhancement for detection layers ===
+  - [20, 1, CBAM, [128]]         # 33 P2 output with CBAM
+  - [23, 1, CBAM, [256]]         # 34 P3 output with CBAM
+
+  # Dense multi-scale detection
+  - [[33, 34, 29, 32], 1, Detect, [nc]]  # 35 Detect(P2, P3, P4, P5)
+

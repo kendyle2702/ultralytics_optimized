@@ -18,12 +18,15 @@ from ultralytics.nn.modules import (
     C2PSA,
     C3,
     C3TR,
+    CBAM,
+    ChannelAttention,
     ELAN1,
     OBB,
     PSA,
     SPP,
     SPPELAN,
     SPPF,
+    SpatialAttention,
     A2C2f,
     AConv,
     ADown,
@@ -1621,6 +1624,8 @@ def parse_model(d, ch, verbose=True):
             c2 = args[1] if args[3] else args[1] * 4
         elif m is torch.nn.BatchNorm2d:
             args = [ch[f]]
+        elif m in {CBAM, ChannelAttention, SpatialAttention}:
+            args = [ch[f], *args]
         elif m is Concat:
             c2 = sum(ch[x] for x in f)
         elif m in frozenset(

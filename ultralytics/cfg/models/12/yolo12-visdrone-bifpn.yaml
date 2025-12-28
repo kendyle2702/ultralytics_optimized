@@ -1,0 +1,73 @@
+# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
+
+# YOLO12-Visdrone-BiFPN: Advanced architecture with BiFPN-inspired connections
+# Highly optimized for Visdrone small object detection
+# Key innovations:
+#   - BiFPN-style weighted bidirectional feature pyramid
+#   - Multi-scale cross-layer connections
+#   - Enhanced P2 pathway for tiny objects (birds, people at distance)
+#   - PSA (Polarized Self-Attention) for small object enhancement
+#   - Lightweight design for practical deployment
+
+# Parameters
+nc: 10  # Visdrone classes
+scales: # model compound scaling constants
+  # [depth, width, max_channels]
+  n: [0.50, 0.30, 1024] # More channels for small objects
+  s: [0.50, 0.60, 1024] # Recommended for Visdrone
+  m: [0.60, 1.00, 512]  # High accuracy with reasonable speed
+  l: [1.00, 1.00, 512]
+  x: [1.00, 1.50, 512]
+
+# YOLO12-Visdrone-BiFPN backbone
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, Conv, [64, 3, 2]]   # 0-P1/2
+  - [-1, 1, Conv, [128, 3, 2]]  # 1-P2/4
+  - [-1, 3, C3k2, [128, False, 0.25]]  # 2 - Deeper P2 for small objects
+  - [-1, 1, Conv, [256, 3, 2]]  # 3-P3/8
+  - [-1, 3, C3k2, [256, False, 0.25]]  # 4
+  - [-1, 1, Conv, [512, 3, 2]]  # 5-P4/16
+  - [-1, 4, A2C2f, [512, True, 4]]  # 6
+  - [-1, 1, Conv, [1024, 3, 2]] # 7-P5/32
+  - [-1, 4, A2C2f, [1024, True, 1]] # 8
+  - [-1, 1, SPPF, [1024, 5]]    # 9 - Spatial pyramid pooling
+
+# YOLO12-Visdrone-BiFPN head - BiFPN-inspired multi-scale fusion
+head:
+  # === First top-down pathway ===
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 10
+  - [[-1, 6], 1, Concat, [1]]   # 11 cat P4
+  - [-1, 2, C2fPSA, [512]]      # 12 PSA attention for P4
+
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 13
+  - [[-1, 4], 1, Concat, [1]]   # 14 cat P3
+  - [-1, 2, C2fPSA, [256]]      # 15 PSA attention for P3
+  
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # 16
+  - [[-1, 2], 1, Concat, [1]]   # 17 cat P2
+  - [-1, 2, C2fAttn, [128]]     # 18 Attention-enhanced P2
+
+  # === BiFPN-style cross-scale connections ===
+  # P2 -> P3 (bottom-up)
+  - [-1, 1, Conv, [128, 3, 2]]  # 19
+  - [[-1, 15, 4], 1, Concat, [1]]  # 20 cat P3_td + P3_backbone (multi-source)
+  - [-1, 2, C2fPSA, [256]]      # 21 Enhanced P3_out
+  
+  # P3 -> P4 (bottom-up)
+  - [-1, 1, Conv, [256, 3, 2]]  # 22
+  - [[-1, 12, 6], 1, Concat, [1]]  # 23 cat P4_td + P4_backbone (multi-source)
+  - [-1, 2, C2fPSA, [512]]      # 24 Enhanced P4_out
+
+  # P4 -> P5 (bottom-up)
+  - [-1, 1, Conv, [512, 3, 2]]  # 25
+  - [[-1, 9], 1, Concat, [1]]   # 26 cat P5_backbone
+  - [-1, 2, A2C2f, [1024, True, 1]]  # 27 Enhanced P5_out
+
+  # === Small object enhancement layer ===
+  - [18, 1, CBAM, [128]]        # 28 CBAM on P2 for tiny objects
+  - [21, 1, CBAM, [256]]        # 29 CBAM on P3 for small objects
+
+  # Multi-scale detection with 4 heads
+  - [[28, 29, 24, 27], 1, Detect, [nc]]  # 30 Detect(P2, P3, P4, P5)
+

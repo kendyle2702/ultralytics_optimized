@@ -37,24 +37,6 @@ if __name__ == "__main__":
         project="runs/detect",   # Thư mục project
         name="yolov8n_visdrone_people",  # Tên experiment
         exist_ok=False,          # Tạo folder mới nếu đã tồn tại
-        
-        # Pretrained và optimizer (mặc định)
-        pretrained=True,         # Sử dụng pretrained weights
-        optimizer="auto",        # Auto select optimizer
-        
-        # Validation
-        val=True,                # Run validation
-        plots=True,              # Lưu plots
-        
-        # Others (giữ mặc định)
-        verbose=True,            # Print logs
-        seed=0,                  # Random seed
-        deterministic=True,      # Reproducibility
-        device="",               # Auto select device (GPU if available)
-        workers=8,               # Dataloader workers
-        
-        # Augmentation và hyperparameters giữ mặc định
-        # Tất cả các hyperparameters khác sẽ lấy từ cfg/default.yaml
     )
     
     # Print training results
