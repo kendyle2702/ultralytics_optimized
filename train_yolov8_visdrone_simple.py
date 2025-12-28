@@ -12,7 +12,7 @@ from ultralytics import YOLO
 if __name__ == "__main__":
     # Load model từ config file (train from scratch)
     # Hoặc có thể load pretrained weights nếu muốn
-    model = YOLO("ultralytics/cfg/models/v8/yolov8-visdrone.yaml")
+    model = YOLO("ultralytics/cfg/models/v8/yolov8n-visdrone.yaml")
     
     # Nếu muốn fine-tune từ pretrained YOLOv8n:
     # model = YOLO("yolov8n.pt")

@@ -11,7 +11,9 @@ from ultralytics import YOLO
 
 if __name__ == "__main__":
     # Load model - YOLOv8n pretrained
-    model = YOLO("yolov8n.pt")
+    # model = YOLO("yolov8n.pt")
+    model = YOLO("yolov10n.pt")
+    # model = YOLO("yolo12n.pt")
     
     # Training configuration
     # Với VisDrone-people dataset:
