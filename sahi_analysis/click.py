@@ -1,5 +1,6 @@
-import pyautogui
 import time
+
+import pyautogui
 
 # --- CẤU HÌNH ---
 INTERVAL = 300  # Số giây giữa mỗi lần click
@@ -10,14 +11,13 @@ print("LƯU Ý: Nếu mất kiểm soát chuột, hãy di nhanh chuột về 4 g
 
 try:
     while True:
-        
-        pyautogui.click(button='right')
+        pyautogui.click(button="right")
         # Thực hiện click chuột trái tại vị trí hiện tại của con trỏ
         pyautogui.click()
-        
+
         # In ra màn hình để bạn biết nó đang hoạt động
         print(">> Đã click chuột trái")
-        
+
         # Nghỉ 10 giây
         time.sleep(INTERVAL)
 
