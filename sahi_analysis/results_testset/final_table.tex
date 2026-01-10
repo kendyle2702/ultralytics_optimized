@@ -1,0 +1,26 @@
+\begin{table}[ht]
+    \centering
+    \caption{Final evaluation on VisDrone test set (1,610 images). SAHI uses optimal configuration (slice=512, overlap=0.1) determined from validation set analysis. All models evaluated with confidence threshold 0.1 and IoU threshold 0.5.}
+    \label{tab:final_evaluation}
+    \setlength{\tabcolsep}{3.5pt}
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        \textbf{Model Configuration} & \textbf{mAP50} & \textbf{mAP50-95} & \textbf{mAPs} & \textbf{mAPm} & \textbf{mAPl} & \textbf{FPS} \\
+        \hline
+        \hline
+        \multicolumn{7}{|l|}{\textit{COCO Pretrained Models (Zero-shot Transfer)}} \\
+        \hline
+        YOLOv8n-COCO & 0.0589 & 0.0283 & 0.0103 & 0.1663 & 0.5902 & \textbf{66.84} \\
+        \quad + SAHI (512/0.1) & 0.1455 & 0.0621 & 0.0433 & 0.2597 & 0.5070 & 5.76 \\
+        \quad \textit{Improvement} & \textit{+147\%} & \textit{+119\%} & \textit{+321\%} & \textit{+56\%} & \textit{-14\%} & \textit{-91\%} \\
+        \hline
+        \multicolumn{7}{|l|}{\textit{VisDrone Fine-tuned Models}} \\
+        \hline
+        YOLOv8n-VisDrone & 0.2486 & 0.0991 & 0.0688 & \textbf{0.3623} & \textbf{0.5184} & \textbf{75.01} \\
+        \quad + SAHI (512/0.1) & \textbf{0.3102} & \textbf{0.1093} & \textbf{0.0960} & 0.2382 & 0.2851 & 5.60 \\
+        \quad \textit{Improvement} & \textit{+25\%} & \textit{+10\%} & \textit{+39\%} & \textit{-34\%} & \textit{-45\%} & \textit{-93\%} \\
+        \hline
+    \end{tabular}
+\end{table}
+
