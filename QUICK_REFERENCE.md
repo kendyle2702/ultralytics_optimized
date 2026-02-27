@@ -31,12 +31,12 @@ python train_yolov8_visdrone_simple.py
 
 # Or with specific config
 yolo detect train \
-    data=VisDrone-people.yaml \
-    model=ultralytics/cfg/models/v8/yolov8-visdrone.yaml \
-    epochs=150 \
-    imgsz=640 \
-    batch=32 \
-    device=0
+  data=VisDrone-people.yaml \
+  model=ultralytics/cfg/models/v8/yolov8-visdrone.yaml \
+  epochs=150 \
+  imgsz=640 \
+  batch=32 \
+  device=0
 ```
 
 ---
@@ -58,20 +58,20 @@ model_configs = {
 
 ## 📈 12 COCO Metrics
 
-| Short | Full Name | Critical for VisDrone? |
-|-------|-----------|------------------------|
-| AP | AP@[.5:.95] | ✅ Primary |
-| AP50 | AP@.5 | ✅ Common |
-| AP75 | AP@.75 | ⚪ Optional |
-| APs | AP_small | 🔥 **CRITICAL** |
-| APm | AP_medium | ✅ Important |
-| APl | AP_large | ⚪ Less important |
-| AR1 | AR@1 | ⚪ Optional |
-| AR10 | AR@10 | ✅ Important |
-| AR100 | AR@100 | ✅ Max recall |
-| ARs | AR_small | 🔥 **CRITICAL** |
-| ARm | AR_medium | ✅ Important |
-| ARl | AR_large | ⚪ Less important |
+| Short | Full Name   | Critical for VisDrone? |
+| ----- | ----------- | ---------------------- |
+| AP    | AP@[.5:.95] | ✅ Primary             |
+| AP50  | AP@.5       | ✅ Common              |
+| AP75  | AP@.75      | ⚪ Optional            |
+| APs   | AP_small    | 🔥 **CRITICAL**        |
+| APm   | AP_medium   | ✅ Important           |
+| APl   | AP_large    | ⚪ Less important      |
+| AR1   | AR@1        | ⚪ Optional            |
+| AR10  | AR@10       | ✅ Important           |
+| AR100 | AR@100      | ✅ Max recall          |
+| ARs   | AR_small    | 🔥 **CRITICAL**        |
+| ARm   | AR_medium   | ✅ Important           |
+| ARl   | AR_large    | ⚪ Less important      |
 
 **Focus on**: AP, AP50, APs, AR100, ARs
 
@@ -100,6 +100,7 @@ results/coco_metrics/
 ## 🔧 Common Issues & Fixes
 
 ### Issue 1: Model not found
+
 ```bash
 # Check path exists
 ls runs/detect/YOUR_PATH/weights/best.pt
@@ -108,6 +109,7 @@ ls runs/detect/YOUR_PATH/weights/best.pt
 ```
 
 ### Issue 2: No images found
+
 ```bash
 # Verify dataset structure
 ls /home/lqc/Research/Detection/datasets/VisDrone/images/test/
@@ -115,6 +117,7 @@ ls /home/lqc/Research/Detection/datasets/VisDrone/labels/test/
 ```
 
 ### Issue 3: CBAM KeyError
+
 ```bash
 # Already fixed in tasks.py
 # If still occurs, verify imports:
@@ -141,18 +144,21 @@ grep "CBAM" ultralytics/nn/tasks.py
 ## 🎓 For Paper
 
 ### Key Metrics to Report:
+
 1. **AP@[.5:.95]** - Primary metric
 2. **AP_small** - Shows small object improvement
-3. **AR_small** - Recall on small objects  
+3. **AR_small** - Recall on small objects
 4. **Improvement %** over baseline
 
 ### Template Sentence:
+
 ```
 "Our method achieves X% AP@[0.5:0.95] with Y% AP_small,
 representing a Z% improvement over baseline YOLOv8."
 ```
 
 ### Table Format:
+
 ```
 Model         | AP    | AP50  | APs   | ARs
 --------------|-------|-------|-------|------
@@ -168,10 +174,10 @@ Improvement   | +14%  | +11%  | +52%  | +38%
 
 ```bash
 # Complete workflow (bookmark this!)
-cd /home/lqc/Research/Detection/ultralytics && \
-python evaluate_models_coco_metrics.py && \
-python visualize_coco_results.py && \
-echo "✅ Evaluation complete! Check results/coco_metrics/"
+cd /home/lqc/Research/Detection/ultralytics \
+  && python evaluate_models_coco_metrics.py \
+  && python visualize_coco_results.py \
+  && echo "✅ Evaluation complete! Check results/coco_metrics/"
 ```
 
 ---
@@ -189,4 +195,3 @@ echo "✅ Evaluation complete! Check results/coco_metrics/"
 **Last Updated**: 2024
 
 🎯 **Tip**: Bookmark this file for quick reference during evaluation!
-

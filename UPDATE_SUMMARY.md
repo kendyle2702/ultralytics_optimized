@@ -3,23 +3,27 @@
 ## ✨ What's New
 
 ### 1. **Parameters Counting** 📊
+
 - Tự động đếm số lượng parameters (total & trainable)
 - Hiển thị ở dạng Millions (M) để dễ đọc
 - Included in all output files
 
 ### 2. **FPS Measurement** ⚡
+
 - Measure Frames Per Second (640x640 input)
 - Measure inference latency (milliseconds)
 - GPU/CPU automatic detection
 - Warmup iterations để accurate measurement
 
 ### 3. **Enhanced Visualizations** 📈
+
 - **NEW**: Efficiency scatter plot (FPS vs AP with params as bubble size)
 - **NEW**: Parameters comparison bar chart
 - **NEW**: FPS comparison bar chart
 - All existing charts updated với params & FPS info
 
 ### 4. **Easy Model Addition** ➕
+
 - Chỉ cần thêm 1 dòng vào dictionary
 - Complete guide: `HOW_TO_ADD_MODELS.md`
 - Support unlimited số lượng models
@@ -37,6 +41,7 @@ yolov8-p2,28.40,38.7,25.8,0.292,0.502,...
 ```
 
 ### New Metrics:
+
 - **params_M**: Parameters in millions
 - **FPS**: Frames per second @ 640x640
 - **latency_ms**: Inference latency in milliseconds
@@ -46,9 +51,11 @@ yolov8-p2,28.40,38.7,25.8,0.292,0.502,...
 ## 🎨 New Visualizations
 
 ### 1. Efficiency Scatter Plot
+
 **File**: `results/coco_metrics/figures/efficiency_scatter.png`
 
 Shows:
+
 - X-axis: FPS (speed)
 - Y-axis: AP@[.5:.95] (accuracy)
 - Bubble size: Parameters (model size)
@@ -56,9 +63,11 @@ Shows:
 → Ideal models: Top-right corner với small bubbles!
 
 ### 2. Parameters Comparison
+
 **File**: `results/coco_metrics/figures/params_fps_comparison.png`
 
 Shows:
+
 - Left panel: Model size (parameters)
 - Right panel: Inference speed (FPS)
 
@@ -75,6 +84,7 @@ python evaluate_models_coco_metrics.py
 ```
 
 **New Output:**
+
 ```
 🔄 Running inference: yolov8-base
    Model: /path/to/best.pt
@@ -92,6 +102,7 @@ python visualize_coco_results.py
 ```
 
 **New Figures:**
+
 - `efficiency_scatter.png` ← NEW!
 - `params_fps_comparison.png` ← NEW!
 - All existing figures updated
@@ -108,7 +119,6 @@ python visualize_coco_results.py
 model_configs = {
     "yolov8-base": "/home/lqc/.../v8/best.pt",
     "yolov8-p2": "/home/lqc/.../v8_p2/best.pt",
-    
     # ✨ ADD YOUR NEW MODEL HERE ✨
     "yolov11": "/path/to/yolov11/best.pt",
     "my-custom-model": "/path/to/my_model/best.pt",
@@ -117,6 +127,7 @@ model_configs = {
 ```
 
 **That's it!** Script tự động:
+
 - ✅ Count parameters
 - ✅ Measure FPS
 - ✅ Run inference
@@ -141,11 +152,11 @@ yolov8-p2-cbam     29.15  36.42       27.45        0.314
 
 ⚡ EFFICIENCY SUMMARY:
 ----------------------------------------------------
-Model                          Params (M)   FPS          AP@.5       
+Model                          Params (M)   FPS          AP@.5
 ----------------------------------------------------
-yolov8-base                    25.90        45.23        0.4850      
-yolov8-p2                      28.40        38.67        0.5020      
-yolov8-p2-cbam                 29.15        36.42        0.5380      
+yolov8-base                    25.90        45.23        0.4850
+yolov8-p2                      28.40        38.67        0.5020
+yolov8-p2-cbam                 29.15        36.42        0.5380
 ----------------------------------------------------
 ```
 
@@ -170,11 +181,11 @@ yolov8-p2-cbam                 29.15        36.42        0.5380
 
 **Efficiency Table:**
 
-| Model | Params (M) | FPS | Latency (ms) | AP@.5 | AP_small |
-|-------|------------|-----|--------------|-------|----------|
-| YOLOv8 | 25.9 | 45.2 | 22.1 | 0.485 | 0.152 |
-| YOLOv8-P2 | 28.4 | 38.7 | 25.8 | 0.502 | 0.181 |
-| **Ours** | **29.1** | **36.4** | **27.5** | **0.538** | **0.231** |
+| Model     | Params (M) | FPS      | Latency (ms) | AP@.5     | AP_small  |
+| --------- | ---------- | -------- | ------------ | --------- | --------- |
+| YOLOv8    | 25.9       | 45.2     | 22.1         | 0.485     | 0.152     |
+| YOLOv8-P2 | 28.4       | 38.7     | 25.8         | 0.502     | 0.181     |
+| **Ours**  | **29.1**   | **36.4** | **27.5**     | **0.538** | **0.231** |
 
 ### Key Points to Highlight:
 
@@ -186,7 +197,7 @@ yolov8-p2-cbam                 29.15        36.42        0.5380
 
 ```latex
 Our method achieves 0.314 AP@[0.5:0.95] with 29.1M parameters,
-representing a good trade-off between accuracy (+14.2%) and 
+representing a good trade-off between accuracy (+14.2%) and
 efficiency (only +12% parameters, 36 FPS still real-time capable).
 ```
 
@@ -198,8 +209,7 @@ efficiency (only +12% parameters, 36 FPS still real-time capable).
 
 ```python
 total_params = sum(p.numel() for p in model.parameters())
-trainable_params = sum(p.numel() for p in model.parameters() 
-                      if p.requires_grad)
+trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 ```
 
 ### FPS Measurement:
@@ -223,18 +233,21 @@ trainable_params = sum(p.numel() for p in model.parameters()
 ## 🎯 Benefits
 
 ### For Research:
+
 - ✅ Compare accuracy vs efficiency
 - ✅ Show model size differences
 - ✅ Prove real-time capability
 - ✅ Ablation study với params tracking
 
 ### For Paper:
+
 - ✅ Complete metrics table
 - ✅ Efficiency scatter plot
 - ✅ Trade-off analysis
 - ✅ Reproducible benchmarks
 
 ### For Development:
+
 - ✅ Easy to add new models
 - ✅ Automatic measurements
 - ✅ Comprehensive comparison
@@ -254,6 +267,7 @@ trainable_params = sum(p.numel() for p in model.parameters()
 ## ✅ Changes Made
 
 ### Files Modified:
+
 1. ✏️ `evaluate_models_coco_metrics.py`
    - Added `count_parameters()` method
    - Added `measure_fps()` method
@@ -267,6 +281,7 @@ trainable_params = sum(p.numel() for p in model.parameters()
    - Updated `visualize_all()` to include new plots
 
 ### Files Created:
+
 3. 📄 `HOW_TO_ADD_MODELS.md` - Complete guide
 4. 📄 `UPDATE_SUMMARY.md` - This file
 
@@ -288,6 +303,7 @@ ls results/coco_metrics/
 ```
 
 **Output includes:**
+
 - ✅ 15 metrics per model (12 COCO + 3 efficiency)
 - ✅ 7 visualization figures
 - ✅ CSV, JSON, TXT formats
@@ -300,4 +316,3 @@ ls results/coco_metrics/
 **Status**: ✅ Ready for Production
 
 **Enjoy the enhanced evaluation system! 🎉📊⚡**
-

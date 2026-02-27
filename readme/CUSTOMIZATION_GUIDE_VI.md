@@ -7,6 +7,7 @@ Bạn đang sử dụng **Ultralytics v8.3.228** - phiên bản cuối cùng h�
 ### ✅ Khả Năng Tùy Chỉnh Được Hỗ Trợ
 
 Ultralytics YOLO **có đầy đủ hỗ trợ** để tùy chỉnh:
+
 - ✅ **Backbone** - Thay đổi kiến trúc chiết xuất đặc trưng
 - ✅ **Neck** - Sửa đổi kết nối giữa backbone và head
 - ✅ **Loss Functions** - Thay đổi các hàm mất mát
@@ -24,9 +25,9 @@ Mỗi mô hình YOLO được định nghĩa bằng file YAML có ba phần chí
 ```yaml
 # Ví dụ: ultralytics/cfg/models/11/yolo11.yaml
 
-nc: 80  # Số lớp
-scales:  # Hệ số tỷ lệ mô hình
-  n: [0.50, 0.25, 1024]  # [depth_multiple, width_multiple, max_channels]
+nc: 80 # Số lớp
+scales: # Hệ số tỷ lệ mô hình
+  n: [0.50, 0.25, 1024] # [depth_multiple, width_multiple, max_channels]
   s: [0.50, 0.50, 1024]
   m: [0.50, 1.00, 512]
   l: [1.00, 1.00, 512]
@@ -35,36 +36,36 @@ scales:  # Hệ số tỷ lệ mô hình
 # PHẦN BACKBONE - Chiết xuất đặc trưng
 backbone:
   # [from, repeats, module, args]
-  - [-1, 1, Conv, [64, 3, 2]]          # Layer 0: Convolution
-  - [-1, 1, Conv, [128, 3, 2]]         # Layer 1: Downsample
-  - [-1, 2, C3k2, [256, False, 0.25]]  # Layer 2: Repeated block
-  - [-1, 1, Conv, [256, 3, 2]]         # Layer 3
-  - [-1, 2, C3k2, [512, False, 0.25]]  # Layer 4
-  - [-1, 1, SPPF, [1024, 5]]           # Layer 9: Spatial Pyramid Pooling
+  - [-1, 1, Conv, [64, 3, 2]] # Layer 0: Convolution
+  - [-1, 1, Conv, [128, 3, 2]] # Layer 1: Downsample
+  - [-1, 2, C3k2, [256, False, 0.25]] # Layer 2: Repeated block
+  - [-1, 1, Conv, [256, 3, 2]] # Layer 3
+  - [-1, 2, C3k2, [512, False, 0.25]] # Layer 4
+  - [-1, 1, SPPF, [1024, 5]] # Layer 9: Spatial Pyramid Pooling
 
 # PHẦN NECK - Kết nối và tổng hợp đặc trưng
 head:
-  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]  # Upsample
-  - [[-1, 6], 1, Concat, [1]]                   # Concatenate with skip connection
-  - [-1, 2, C3k2, [512, False]]                 # Process merged features
-  
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]] # Upsample
+  - [[-1, 6], 1, Concat, [1]] # Concatenate with skip connection
+  - [-1, 2, C3k2, [512, False]] # Process merged features
+
   # Lặp lại cho các tỷ lệ khác nhau
   - [-1, 1, Conv, [256, 3, 2]]
   - [[-1, 13], 1, Concat, [1]]
   - [-1, 2, C3k2, [512, False]]
-  
+
   # PHẦN HEAD - Phát hiện đối tượng
-  - [[16, 19, 22], 1, Detect, [nc]]  # Detect layer cho cả 3 tỷ lệ
+  - [[16, 19, 22], 1, Detect, [nc]] # Detect layer cho cả 3 tỷ lệ
 ```
 
 ### 1.2 Định Dạng Lớp: [from, repeats, module, args]
 
-| Thành phần | Ý Nghĩa | Ví Dụ |
-|-----------|---------|-------|
-| **from** | Kết nối từ layer nào | `-1` (layer trước), `6` (layer 6), `[4,6,8]` (multiple inputs) |
-| **repeats** | Lặp lại bao nhiêu lần | `1` (một lần), `3` (ba lần), `2` (hai lần) |
-| **module** | Loại mô-đun | `Conv`, `C2f`, `C3k2`, `SPPF`, `Detect` |
-| **args** | Các tham số mô-đun | `[64, 3, 2]` (channels, kernel_size, stride) |
+| Thành phần  | Ý Nghĩa               | Ví Dụ                                                          |
+| ----------- | --------------------- | -------------------------------------------------------------- |
+| **from**    | Kết nối từ layer nào  | `-1` (layer trước), `6` (layer 6), `[4,6,8]` (multiple inputs) |
+| **repeats** | Lặp lại bao nhiêu lần | `1` (một lần), `3` (ba lần), `2` (hai lần)                     |
+| **module**  | Loại mô-đun           | `Conv`, `C2f`, `C3k2`, `SPPF`, `Detect`                        |
+| **args**    | Các tham số mô-đun    | `[64, 3, 2]` (channels, kernel_size, stride)                   |
 
 ---
 
@@ -81,35 +82,35 @@ nc: 80
 backbone:
   # Thay thế backbone YOLO11 bằng các layer tùy chỉnh
   - [-1, 1, Conv, [32, 3, 1]]
-  - [-1, 1, Conv, [64, 3, 2]]          # P1/2
-  - [-1, 1, Conv, [128, 3, 2]]         # P2/4
-  - [-1, 3, C2f, [128, True]]          # Sử dụng C2f block
-  - [-1, 1, Conv, [256, 3, 2]]         # P3/8
-  - [-1, 6, C2f, [256, True]]          # Nhiều block hơn
-  - [-1, 1, Conv, [512, 3, 2]]         # P4/16
+  - [-1, 1, Conv, [64, 3, 2]] # P1/2
+  - [-1, 1, Conv, [128, 3, 2]] # P2/4
+  - [-1, 3, C2f, [128, True]] # Sử dụng C2f block
+  - [-1, 1, Conv, [256, 3, 2]] # P3/8
+  - [-1, 6, C2f, [256, True]] # Nhiều block hơn
+  - [-1, 1, Conv, [512, 3, 2]] # P4/16
   - [-1, 6, C2f, [512, True]]
-  - [-1, 1, Conv, [1024, 3, 2]]        # P5/32
+  - [-1, 1, Conv, [1024, 3, 2]] # P5/32
   - [-1, 3, C2f, [1024, True]]
-  - [-1, 1, SPPF, [1024, 5]]           # Spatial Pyramid Pooling - FAST
+  - [-1, 1, SPPF, [1024, 5]] # Spatial Pyramid Pooling - FAST
 
 head:
   # Sử dụng head tiêu chuẩn
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 6], 1, Concat, [1]]
   - [-1, 3, C2f, [512]]
-  
+
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 4], 1, Concat, [1]]
   - [-1, 3, C2f, [256]]
-  
+
   - [-1, 1, Conv, [256, 3, 2]]
   - [[-1, 12], 1, Concat, [1]]
   - [-1, 3, C2f, [512]]
-  
+
   - [-1, 1, Conv, [512, 3, 2]]
   - [[-1, 9], 1, Concat, [1]]
   - [-1, 3, C2f, [1024]]
-  
+
   - [[15, 18, 21], 1, Detect, [nc]]
 ```
 
@@ -118,6 +119,7 @@ head:
 Các mô-đun bạn có thể sử dụng trong backbone:
 
 **Convolution blocks:**
+
 - `Conv` - Conv2d + BatchNorm + Activation
 - `Conv2` - Depthwise separable convolution
 - `DWConv` - Depthwise convolution
@@ -125,6 +127,7 @@ Các mô-đun bạn có thể sử dụng trong backbone:
 - `GhostConv` - Ghost convolution (lightweight)
 
 **Bottleneck blocks:**
+
 - `Bottleneck` - Inverted bottleneck
 - `BottleneckCSP` - CSP bottleneck
 - `C2f` - CSPDarknet block (YOLO11 tiêu chuẩn)
@@ -133,11 +136,13 @@ Các mô-đun bạn có thể sử dụng trong backbone:
 - `RepConv` - Reparameterized convolution
 
 **Pooling layers:**
+
 - `SPPF` - Spatial Pyramid Pooling - Fast
 - `SPP` - Spatial Pyramid Pooling
 - `ImagePoolingAttn` - Image pooling attention
 
 **Khác:**
+
 - `ResNetLayer` - ResNet layer
 - `HGStem` - HG Stem layer
 - `HGBlock` - HG Block layer
@@ -154,9 +159,9 @@ backbone:
   #                       [channels, model_name, pretrained, train_layers, layer_indices]
 
 head:
-  - [0, 1, Index, [192, 4]]   # P3 features
-  - [0, 1, Index, [384, 6]]   # P4 features
-  - [0, 1, Index, [768, 8]]   # P5 features
+  - [0, 1, Index, [192, 4]] # P3 features
+  - [0, 1, Index, [384, 6]] # P4 features
+  - [0, 1, Index, [768, 8]] # P5 features
   - [[1, 2, 3], 1, Detect, [nc]]
 ```
 
@@ -167,6 +172,7 @@ head:
 ### 3.1 Neck là gì?
 
 **Neck** (cổ) kết nối backbone với head, thường bao gồm:
+
 - Upsampling layers để mở rộng lại kích thước
 - Concatenation để kết hợp đặc trưng từ nhiều tỷ lệ
 - Processing blocks để xử lý các đặc trưng hợp nhất
@@ -180,35 +186,35 @@ backbone:
   - [-1, 1, Conv, [64, 3, 2]]
   - [-1, 1, Conv, [128, 3, 2]]
   - [-1, 2, C3k2, [256, False, 0.25]]
-  - [-1, 1, Conv, [256, 3, 2]]          # Layer 3
-  - [-1, 2, C3k2, [512, False, 0.25]]  # Layer 4
-  - [-1, 1, Conv, [512, 3, 2]]          # Layer 5
-  - [-1, 2, C3k2, [512, True]]          # Layer 6
-  - [-1, 1, Conv, [1024, 3, 2]]         # Layer 7
-  - [-1, 2, C3k2, [1024, True]]         # Layer 8
-  - [-1, 1, SPPF, [1024, 5]]            # Layer 9
+  - [-1, 1, Conv, [256, 3, 2]] # Layer 3
+  - [-1, 2, C3k2, [512, False, 0.25]] # Layer 4
+  - [-1, 1, Conv, [512, 3, 2]] # Layer 5
+  - [-1, 2, C3k2, [512, True]] # Layer 6
+  - [-1, 1, Conv, [1024, 3, 2]] # Layer 7
+  - [-1, 2, C3k2, [1024, True]] # Layer 8
+  - [-1, 1, SPPF, [1024, 5]] # Layer 9
 
 head:
   # NECK - Custom upsampling path với nhiều processing
-  - [-1, 1, Conv, [512, 1, 1]]          # Layer 10: Reduce channels
+  - [-1, 1, Conv, [512, 1, 1]] # Layer 10: Reduce channels
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
-  - [[-1, 6], 1, Concat, [1]]           # Skip connection từ backbone layer 6
-  - [-1, 3, C2f, [512]]                 # Layer 13: Intensive processing
-  
+  - [[-1, 6], 1, Concat, [1]] # Skip connection từ backbone layer 6
+  - [-1, 3, C2f, [512]] # Layer 13: Intensive processing
+
   - [-1, 1, Conv, [256, 1, 1]]
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
-  - [[-1, 4], 1, Concat, [1]]           # Skip connection từ backbone layer 4
-  - [-1, 3, C2f, [256]]                 # Layer 16
-  
+  - [[-1, 4], 1, Concat, [1]] # Skip connection từ backbone layer 4
+  - [-1, 3, C2f, [256]] # Layer 16
+
   # Downsampling path - tương tự nhưng ngược lại
   - [-1, 1, Conv, [256, 3, 2]]
   - [[-1, 13], 1, Concat, [1]]
-  - [-1, 3, C2f, [512]]                 # Layer 19
-  
+  - [-1, 3, C2f, [512]] # Layer 19
+
   - [-1, 1, Conv, [512, 3, 2]]
   - [[-1, 10], 1, Concat, [1]]
-  - [-1, 3, C2f, [1024]]                # Layer 22
-  
+  - [-1, 3, C2f, [1024]] # Layer 22
+
   # HEAD - Detection
   - [[16, 19, 22], 1, Detect, [nc]]
 ```
@@ -224,12 +230,12 @@ backbone:
 head:
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 6], 1, Concat, [1]]
-  - [-1, 2, C2fAttn, [512, 256, 8]]      # C2f với attention (channels, embed_dim, heads)
-  
+  - [-1, 2, C2fAttn, [512, 256, 8]] # C2f với attention (channels, embed_dim, heads)
+
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 4], 1, Concat, [1]]
   - [-1, 2, C2fAttn, [256, 128, 8]]
-  
+
   # Rest of head...
   - [[final_layer_indices], 1, Detect, [nc]]
 ```
@@ -246,24 +252,30 @@ Ultralytics cung cấp các loss functions có sẵn:
 
 ```python
 class v8DetectionLoss:
-    """YOLOv8 Detection Loss"""
+    """YOLOv8 Detection Loss."""
+
     # Thành phần:
     # - BCE Loss cho classification
     # - IoU Loss (CIoU) cho bounding boxes
     # - DFL Loss cho distribution focal loss
 
+
 class VarifocalLoss(nn.Module):
-    """Varifocal Loss - xử lý class imbalance"""
+    """Varifocal Loss - xử lý class imbalance."""
+
     # Tham số: gamma (focusing), alpha (balancing)
 
+
 class FocalLoss(nn.Module):
-    """Focal Loss - down-weight easy examples"""
+    """Focal Loss - down-weight easy examples."""
+
 
 class BboxLoss(nn.Module):
-    """Bounding Box Loss với DFL"""
+    """Bounding Box Loss với DFL."""
+
 
 class DFLoss(nn.Module):
-    """Distribution Focal Loss"""
+    """Distribution Focal Loss."""
 ```
 
 ### 4.2 Cách Thay Đổi Loss Function
@@ -274,45 +286,45 @@ class DFLoss(nn.Module):
 # custom_loss.py
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+
 
 class CustomDetectionLoss:
-    """Custom Detection Loss cho research"""
-    
+    """Custom Detection Loss cho research."""
+
     def __init__(self, model, tal_topk=10):
         device = next(model.parameters()).device
         h = model.args
         m = model.model[-1]  # Detect module
-        
+
         self.bce = nn.BCEWithLogitsLoss(reduction="none")
         self.hyp = h
         self.stride = m.stride
         self.nc = m.nc
         self.reg_max = m.reg_max
         self.device = device
-        
+
         # Import cần thiết từ ultralytics
-        from ultralytics.utils.tal import TaskAlignedAssigner
         from ultralytics.utils.loss import BboxLoss
-        
+        from ultralytics.utils.tal import TaskAlignedAssigner
+
         self.assigner = TaskAlignedAssigner(topk=tal_topk, num_classes=self.nc)
         self.bbox_loss = BboxLoss(m.reg_max).to(device)
-    
+
     def __call__(self, preds, batch):
-        """Compute custom loss"""
+        """Compute custom loss."""
         # preds: model predictions
         # batch: ground truth batch
-        
+
         # Implement your custom loss computation
         # ...
-        
+
         loss = torch.zeros(3, device=self.device)  # [box, cls, dfl]
-        
+
         # Your implementation
         # loss[0] = box_loss
         # loss[1] = cls_loss
         # loss[2] = dfl_loss
-        
+
         return loss * batch_size, loss.detach()
 ```
 
@@ -324,15 +336,18 @@ class CustomDetectionLoss:
 from ultralytics.models.yolo.detect.train import DetectionTrainer
 from ultralytics.nn.tasks import DetectionModel
 
+
 class CustomDetectionModel(DetectionModel):
     def init_criterion(self):
-        """Initialize custom loss criterion"""
+        """Initialize custom loss criterion."""
         from custom_loss import CustomDetectionLoss
+
         return CustomDetectionLoss(self)
+
 
 class CustomDetectionTrainer(DetectionTrainer):
     def get_model(self, cfg=None, weights=None, verbose=True):
-        """Return custom detection model"""
+        """Return custom detection model."""
         model = CustomDetectionModel(cfg or self.args.model, ch=3, nc=self.data["nc"], verbose=verbose)
         if weights:
             model.load(weights)
@@ -344,16 +359,12 @@ class CustomDetectionTrainer(DetectionTrainer):
 ```python
 # train_custom.py
 from custom_trainer import CustomDetectionTrainer
-from ultralytics import YOLO
 
 # Cách 1: Sử dụng trực tiếp với command line
 # yolo detect train model=yolo11n.yaml data=coco8.yaml epochs=100 trainer=CustomDetectionTrainer
 
 # Cách 2: Sử dụng trong Python
-trainer = CustomDetectionTrainer(
-    cfg=dict(model="yolo11n.yaml", data="coco8.yaml", epochs=100),
-    overrides={}
-)
+trainer = CustomDetectionTrainer(cfg=dict(model="yolo11n.yaml", data="coco8.yaml", epochs=100), overrides={})
 trainer.train()
 ```
 
@@ -362,30 +373,23 @@ trainer.train()
 ```python
 # v8DetectionLoss breakdown
 def __call__(self, preds, batch):
+    """preds: [pred_scores, pred_dist, pred_bboxes] từ model batch: {img, bboxes, cls, ...} ground truth.
     """
-    preds: [pred_scores, pred_dist, pred_bboxes] từ model
-    batch: {img, bboxes, cls, ...} ground truth
-    """
-    
     # 1. Task Aligned Assignment - xác định positive/negative samples
-    target_scores, target_bboxes, fg_mask = self.assigner(...)
-    
+    target_scores, target_bboxes, _fg_mask = self.assigner(...)
+
     # 2. Classification Loss (BCE)
     loss_cls = self.bce(pred_scores, target_scores).sum() / target_scores.sum()
-    
+
     # 3. Bbox Regression Loss
     loss_iou = self.bbox_loss.compute_iou(pred_bboxes, target_bboxes)
-    
+
     # 4. Distribution Focal Loss (DFL)
     loss_dfl = self.bbox_loss.dfl_loss(pred_dist, target_dist)
-    
+
     # 5. Weighted combination
-    total_loss = (
-        self.hyp.box * loss_iou +
-        self.hyp.cls * loss_cls +
-        self.hyp.dfl * loss_dfl
-    )
-    
+    total_loss = self.hyp.box * loss_iou + self.hyp.cls * loss_cls + self.hyp.dfl * loss_dfl
+
     return total_loss
 ```
 
@@ -393,9 +397,9 @@ def __call__(self, preds, batch):
 
 ```yaml
 # Trong data YAML hoặc training config
-box: 7.5      # Bounding box loss weight
-cls: 0.5      # Classification loss weight
-dfl: 1.5      # DFL loss weight (cho distribution)
+box: 7.5 # Bounding box loss weight
+cls: 0.5 # Classification loss weight
+dfl: 1.5 # DFL loss weight (cho distribution)
 ```
 
 ---
@@ -412,7 +416,7 @@ YOLO11 sử dụng **SiLU (Swish)** làm default activation.
 
 ```yaml
 # custom_model.yaml
-activation: torch.nn.ReLU()  # Hoặc bất kỳ activation nào
+activation: torch.nn.ReLU() # Hoặc bất kỳ activation nào
 
 backbone:
   - [-1, 1, Conv, [64, 3, 2]]
@@ -441,9 +445,10 @@ class CustomActivation(nn.Module):
         super().__init__()
         self.silu = nn.SiLU()
         self.relu = nn.ReLU()
-    
+
     def forward(self, x):
         return self.silu(x) * 0.5 + self.relu(x) * 0.5
+
 
 # Sử dụng trong model
 Conv.default_act = CustomActivation()
@@ -470,31 +475,32 @@ Conv.default_act = CustomActivation()
 ```python
 # ultralytics/nn/modules/custom_module.py
 
-import torch
 import torch.nn as nn
-from ..modules import Conv, C2f
+
+from ..modules import Conv
+
 
 class CustomBlock(nn.Module):
-    """Custom feature extraction block"""
-    
+    """Custom feature extraction block."""
+
     def __init__(self, c1, c2, n=1, shortcut=False):
         """
         Args:
             c1: input channels
             c2: output channels
             n: number of blocks
-            shortcut: use skip connection
+            shortcut: use skip connection.
         """
         super().__init__()
         self.cv1 = Conv(c1, c2, 3)
         self.cv2 = Conv(c2, c2, 3)
         self.add = shortcut and c1 == c2
-    
+
     def forward(self, x):
         return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
 
+
 # Đăng ký trong __init__.py
-from .custom_module import CustomBlock
 ```
 
 ### 6.3 Sử Dụng Custom Module trong YAML
@@ -505,7 +511,7 @@ nc: 80
 
 backbone:
   - [-1, 1, Conv, [64, 3, 2]]
-  - [-1, 3, CustomBlock, [256, True]]    # Sử dụng custom block
+  - [-1, 3, CustomBlock, [256, True]] # Sử dụng custom block
   - [-1, 1, Conv, [512, 3, 2]]
   - [-1, 1, SPPF, [1024, 5]]
 
@@ -565,7 +571,7 @@ scales:
 backbone:
   - [-1, 1, Conv, [64, 3, 2]]
   - [-1, 1, Conv, [128, 3, 2]]
-  - [-1, 2, GhostBottleneck, [128, 128, 3]]     # Ghost block tiết kiệm
+  - [-1, 2, GhostBottleneck, [128, 128, 3]] # Ghost block tiết kiệm
   - [-1, 1, Conv, [256, 3, 2]]
   - [-1, 3, C2f, [256, True]]
   - [-1, 1, Conv, [512, 3, 2]]
@@ -578,20 +584,20 @@ backbone:
 head:
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 6], 1, Concat, [1]]
-  - [-1, 2, C2fAttn, [512, 256, 8]]     # Attention mechanism
-  
+  - [-1, 2, C2fAttn, [512, 256, 8]] # Attention mechanism
+
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 4], 1, Concat, [1]]
   - [-1, 2, C2fAttn, [256, 128, 8]]
-  
+
   - [-1, 1, Conv, [256, 3, 2]]
   - [[-1, 12], 1, Concat, [1]]
   - [-1, 2, C2f, [512]]
-  
+
   - [-1, 1, Conv, [512, 3, 2]]
   - [[-1, 9], 1, Concat, [1]]
   - [-1, 2, C2f, [1024]]
-  
+
   - [[15, 18, 21], 1, Detect, [nc]]
 ```
 
@@ -599,9 +605,7 @@ head:
 
 ```python
 # train_research.py
-import torch
 from ultralytics import YOLO
-from pathlib import Path
 
 # Cấu hình thí nghiệm
 EXPERIMENTS = {
@@ -613,13 +617,13 @@ EXPERIMENTS = {
 RESULTS = {}
 
 for exp_name, config in EXPERIMENTS.items():
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Experiment: {exp_name}")
-    print(f"{'='*60}")
-    
+    print(f"{'=' * 60}")
+
     # Load model
     model = YOLO(config)
-    
+
     # Train
     results = model.train(
         data="coco8.yaml",
@@ -632,25 +636,25 @@ for exp_name, config in EXPERIMENTS.items():
         project="runs/research",
         name=exp_name,
     )
-    
+
     # Validate
     metrics = model.val()
-    
+
     # Store results
     RESULTS[exp_name] = {
         "mAP50": metrics.box.map50,
         "mAP50-95": metrics.box.map,
         "params": sum(p.numel() for p in model.parameters()),
-        "speed": metrics.speed['inference']  # ms
+        "speed": metrics.speed["inference"],  # ms
     }
-    
+
     # Predict
     predictions = model.predict("test_image.jpg", conf=0.25)
 
 # So sánh kết quả
-print("\n" + "="*60)
+print("\n" + "=" * 60)
 print("RESULTS COMPARISON")
-print("="*60)
+print("=" * 60)
 
 for name, metrics in RESULTS.items():
     print(f"\n{name}:")
@@ -671,6 +675,7 @@ metrics_to_track = {
     "Efficiency": ["params_per_mAP", "FLOPs_per_inference"],
 }
 
+
 # Tính toán efficiency metrics
 def calculate_efficiency(mAP, params, FLOPs):
     return {
@@ -684,17 +689,17 @@ def calculate_efficiency(mAP, params, FLOPs):
 ```python
 # visualization.py
 import matplotlib.pyplot as plt
-import numpy as np
+
 
 def plot_architecture_comparison(results):
-    """Vẽ biểu đồ so sánh kiến trúc"""
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
+    """Vẽ biểu đồ so sánh kiến trúc."""
+    _fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
     names = list(results.keys())
-    mAP = [results[n]['mAP50-95'] for n in names]
-    params = [results[n]['params']/1e6 for n in names]  # M params
-    fps = [1000/results[n]['speed'] for n in names]     # FPS
-    
+    mAP = [results[n]["mAP50-95"] for n in names]
+    params = [results[n]["params"] / 1e6 for n in names]  # M params
+    fps = [1000 / results[n]["speed"] for n in names]  # FPS
+
     # Plot 1: mAP vs Parameters
     axes[0, 0].scatter(params, mAP, s=100)
     for i, name in enumerate(names):
@@ -702,28 +707,29 @@ def plot_architecture_comparison(results):
     axes[0, 0].set_xlabel("Parameters (M)")
     axes[0, 0].set_ylabel("mAP@0.5-0.95")
     axes[0, 0].set_title("Accuracy vs Model Size")
-    
+
     # Plot 2: mAP vs FPS
-    axes[0, 1].scatter(fps, mAP, s=100, c='red')
+    axes[0, 1].scatter(fps, mAP, s=100, c="red")
     for i, name in enumerate(names):
         axes[0, 1].annotate(name, (fps[i], mAP[i]))
     axes[0, 1].set_xlabel("FPS")
     axes[0, 1].set_ylabel("mAP@0.5-0.95")
     axes[0, 1].set_title("Accuracy vs Speed")
-    
+
     # Plot 3: Bar chart - mAP
-    axes[1, 0].bar(names, mAP, color='skyblue')
+    axes[1, 0].bar(names, mAP, color="skyblue")
     axes[1, 0].set_ylabel("mAP@0.5-0.95")
     axes[1, 0].set_title("Mean Average Precision")
-    
+
     # Plot 4: Bar chart - Parameters
-    axes[1, 1].bar(names, params, color='lightcoral')
+    axes[1, 1].bar(names, params, color="lightcoral")
     axes[1, 1].set_ylabel("Parameters (M)")
     axes[1, 1].set_title("Model Parameters")
-    
+
     plt.tight_layout()
-    plt.savefig("architecture_comparison.png", dpi=300, bbox_inches='tight')
+    plt.savefig("architecture_comparison.png", dpi=300, bbox_inches="tight")
     plt.show()
+
 
 plot_architecture_comparison(RESULTS)
 ```
@@ -738,33 +744,33 @@ plot_architecture_comparison(RESULTS)
 # backbone_optimization_research.py
 """
 Research: Lightweight YOLO backbone using MobileNet-inspired blocks
-Objective: Giảm parameters 30% trong khi duy trì accuracy 95% so với baseline
+Objective: Giảm parameters 30% trong khi duy trì accuracy 95% so với baseline.
 """
 
-import torch
 import torch.nn as nn
+
 from ultralytics import YOLO
-from ultralytics.nn.modules import Conv, C2f, SPPF
-from ultralytics.models.yolo.detect.train import DetectionTrainer
-from ultralytics.nn.tasks import DetectionModel
+
 
 # 1. Define custom lightweight backbone module
 class MobileNetBlock(nn.Module):
     def __init__(self, c1, c2, kernel=3, stride=1, groups=1):
         super().__init__()
-        self.dw = nn.Conv2d(c1, c1, kernel, stride, (kernel-1)//2, groups=c1, bias=False)
+        self.dw = nn.Conv2d(c1, c1, kernel, stride, (kernel - 1) // 2, groups=c1, bias=False)
         self.bn1 = nn.BatchNorm2d(c1)
         self.pw = nn.Conv2d(c1, c2, 1, 1, 0, bias=False)
         self.bn2 = nn.BatchNorm2d(c2)
         self.silu = nn.SiLU(inplace=True)
-    
+
     def forward(self, x):
         x = self.silu(self.bn1(self.dw(x)))
         x = self.silu(self.bn2(self.pw(x)))
         return x
 
+
 # 2. Register custom module
 import ultralytics.nn.modules as modules
+
 modules.MobileNetBlock = MobileNetBlock
 
 # 3. Create YAML config
@@ -792,19 +798,19 @@ head:
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 7], 1, Concat, [1]]
   - [-1, 2, C2f, [512]]
-  
+
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 5], 1, Concat, [1]]
   - [-1, 2, C2f, [256]]
-  
+
   - [-1, 1, Conv, [256, 3, 2]]
   - [[-1, 12], 1, Concat, [1]]
   - [-1, 2, C2f, [512]]
-  
+
   - [-1, 1, Conv, [512, 3, 2]]
   - [[-1, 10], 1, Concat, [1]]
   - [-1, 2, C2f, [1024]]
-  
+
   - [[15, 18, 21], 1, Detect, [nc]]
 """
 
@@ -824,7 +830,7 @@ if __name__ == "__main__":
         project="runs/research",
         name="baseline",
     )
-    
+
     # Proposed
     print("\nTraining PROPOSED (Mobile YOLO)")
     model_mobile = YOLO("mobile_yolo.yaml")
@@ -836,17 +842,17 @@ if __name__ == "__main__":
         project="runs/research",
         name="mobile",
     )
-    
+
     # Compare
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("COMPARISON RESULTS")
-    print("="*60)
+    print("=" * 60)
     params_baseline = sum(p.numel() for p in model_baseline.parameters())
     params_mobile = sum(p.numel() for p in model_mobile.parameters())
-    reduction = (1 - params_mobile/params_baseline) * 100
-    
-    print(f"Baseline parameters: {params_baseline/1e6:.1f}M")
-    print(f"Mobile parameters: {params_mobile/1e6:.1f}M")
+    reduction = (1 - params_mobile / params_baseline) * 100
+
+    print(f"Baseline parameters: {params_baseline / 1e6:.1f}M")
+    print(f"Mobile parameters: {params_mobile / 1e6:.1f}M")
     print(f"Reduction: {reduction:.1f}%")
 ```
 
@@ -863,24 +869,26 @@ model.model.info()
 
 # Print detailed layer information
 from ultralytics.utils.torch_utils import model_info
+
 model_info(model.model)
 ```
 
 ### 9.2 Common Issues & Solutions
 
-| Issue | Solution |
-|-------|----------|
-| Channel mismatch | Kiểm tra output channels của layer trước phải khớp input channels |
-| Model quá lớn | Giảm width_multiple hoặc channel sizes |
-| Out of memory | Giảm batch size hoặc imgsz |
-| Loss không giảm | Kiểm tra learning rate, data loading, loss computation |
-| Shapes không khớp | Xác nhận layer output shapes qua `model.model.info()` |
+| Issue             | Solution                                                          |
+| ----------------- | ----------------------------------------------------------------- |
+| Channel mismatch  | Kiểm tra output channels của layer trước phải khớp input channels |
+| Model quá lớn     | Giảm width_multiple hoặc channel sizes                            |
+| Out of memory     | Giảm batch size hoặc imgsz                                        |
+| Loss không giảm   | Kiểm tra learning rate, data loading, loss computation            |
+| Shapes không khớp | Xác nhận layer output shapes qua `model.model.info()`             |
 
 ### 9.3 Performance Profiling
 
 ```python
 # Profile model performance
 import time
+
 import torch
 from fvcore.nn import FlopCounterMode
 
@@ -987,4 +995,3 @@ ultralytics/
 ---
 
 **Generated for Ultralytics YOLO v8.3.228**
-
