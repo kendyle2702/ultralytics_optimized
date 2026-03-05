@@ -66,6 +66,7 @@ python evaluate_models_coco_metrics.py
 ```
 
 Script sẽ:
+
 1. ✅ Convert VisDrone labels sang COCO format
 2. ✅ Run inference với mỗi model
 3. ✅ Tính 12 chỉ số COCO metrics
@@ -81,6 +82,7 @@ python visualize_coco_results.py
 ```
 
 Sẽ tạo:
+
 - 📊 Bar charts so sánh AP, AR
 - 🔥 Heatmap tất cả metrics
 - 🎯 Radar chart cho key metrics
@@ -90,24 +92,25 @@ Sẽ tạo:
 
 ## 📊 12 COCO Metrics Explained
 
-| Metric | Description | Importance for VisDrone |
-|--------|-------------|------------------------|
-| **AP@[.5:.95]** | AP averaged over IoU thresholds [0.5:0.95] | **Primary metric** |
-| **AP@.5** | AP at IoU=0.50 | Common metric, easier to achieve |
-| **AP@.75** | AP at IoU=0.75 | Strict localization |
-| **AP_small** | AP for small objects (area < 32²) | **Critical for VisDrone** 🔥 |
-| **AP_medium** | AP for medium objects (32² < area < 96²) | Important |
-| **AP_large** | AP for large objects (area > 96²) | Less common in VisDrone |
-| **AR@1** | AR given 1 detection per image | Single detection quality |
-| **AR@10** | AR given 10 detections per image | Multiple detections |
-| **AR@100** | AR given 100 detections per image | **Max recall capability** |
-| **AR_small** | AR for small objects | **Critical for VisDrone** 🔥 |
-| **AR_medium** | AR for medium objects | Important |
-| **AR_large** | AR for large objects | Less common |
+| Metric          | Description                                | Importance for VisDrone          |
+| --------------- | ------------------------------------------ | -------------------------------- |
+| **AP@[.5:.95]** | AP averaged over IoU thresholds [0.5:0.95] | **Primary metric**               |
+| **AP@.5**       | AP at IoU=0.50                             | Common metric, easier to achieve |
+| **AP@.75**      | AP at IoU=0.75                             | Strict localization              |
+| **AP_small**    | AP for small objects (area < 32²)          | **Critical for VisDrone** 🔥     |
+| **AP_medium**   | AP for medium objects (32² < area < 96²)   | Important                        |
+| **AP_large**    | AP for large objects (area > 96²)          | Less common in VisDrone          |
+| **AR@1**        | AR given 1 detection per image             | Single detection quality         |
+| **AR@10**       | AR given 10 detections per image           | Multiple detections              |
+| **AR@100**      | AR given 100 detections per image          | **Max recall capability**        |
+| **AR_small**    | AR for small objects                       | **Critical for VisDrone** 🔥     |
+| **AR_medium**   | AR for medium objects                      | Important                        |
+| **AR_large**    | AR for large objects                       | Less common                      |
 
 ### 🎯 Key Metrics for Paper
 
 For VisDrone small object detection paper:
+
 1. **AP@[.5:.95]** - Primary metric
 2. **AP_small** - Shows improvement on small objects
 3. **AR_small** - Recall on small objects
@@ -118,6 +121,7 @@ For VisDrone small object detection paper:
 ## 📈 Expected Results Format
 
 ### Console Output:
+
 ```
 ====================================================
 📊 FINAL RESULTS SUMMARY
@@ -130,6 +134,7 @@ For VisDrone small object detection paper:
 ```
 
 ### CSV File:
+
 ```csv
 model,AP@[.5:.95],AP@.5,AP@.75,AP_small,AP_medium,AP_large,AR@1,AR@10,AR@100,AR_small,AR_medium,AR_large
 yolov8-base,0.275,0.485,0.287,0.152,0.285,0.412,0.245,0.358,0.402,0.201,0.375,0.485
@@ -154,14 +159,15 @@ Trong method `run_inference()` (line 147):
 ```python
 results = model.predict(
     img_path,
-    conf=0.001,    # Confidence threshold (low to get all detections)
-    iou=0.3,       # NMS IoU threshold
+    conf=0.001,  # Confidence threshold (low to get all detections)
+    iou=0.3,  # NMS IoU threshold
     max_det=1000,  # Maximum detections per image
-    verbose=False
+    verbose=False,
 )
 ```
 
 Adjust these based on your needs:
+
 - `conf=0.001`: Very low để evaluate recall capacity
 - `conf=0.25`: Standard threshold cho production
 - `iou=0.3`: Lower for VisDrone (nhiều objects overlapping)
@@ -173,34 +179,39 @@ Adjust these based on your needs:
 ### For Paper Writing:
 
 #### 1. Baseline Comparison
+
 ```python
-"Our YOLOv8-P2-CBAM achieves 0.314 AP@[.5:.95], 
+"Our YOLOv8-P2-CBAM achieves 0.314 AP@[.5:.95],
 outperforming baseline YOLOv8 (0.275) by 14.2%"
 ```
 
 #### 2. Small Object Performance
+
 ```python
-"On small objects (< 32² pixels), our method achieves 
-0.231 AP_small, a significant 51.3% improvement over 
+"On small objects (< 32² pixels), our method achieves
+0.231 AP_small, a significant 51.3% improvement over
 baseline (0.152 AP_small)"
 ```
 
 #### 3. Recall Improvement
+
 ```python
-"Our model demonstrates superior recall capability with 
-AR@100 of 0.445, indicating better detection of all 
+"Our model demonstrates superior recall capability with
+AR@100 of 0.445, indicating better detection of all
 ground truth objects"
 ```
 
 ### 🎯 Good vs Bad Results
 
 **Good Results** (for small object detection):
+
 - ✅ AP@[.5:.95] > 0.30
 - ✅ AP_small > 0.20 (critical!)
 - ✅ AR_small > 0.35
 - ✅ Improvement over baseline > 10%
 
 **Need Improvement**:
+
 - ❌ AP_small < 0.15
 - ❌ Large gap between AP@.5 and AP@.75 (poor localization)
 - ❌ AR@100 too low (missing detections)
@@ -210,36 +221,43 @@ ground truth objects"
 ## 🐛 Troubleshooting
 
 ### Error: "Model not found"
+
 ```bash
-⚠️  Model not found: runs/detect/xxx/weights/best.pt
+⚠️ Model not found: runs/detect/xxx/weights/best.pt
 ```
 
 **Solution**: Verify đường dẫn model trong config file hoặc script.
 
 ### Error: "No images found"
+
 ```bash
 Found 0 test images
 ```
 
-**Solution**: 
+**Solution**:
+
 - Check dataset path: `/home/lqc/Research/Detection/datasets/VisDrone/images/test/`
 - Make sure images có extension `.jpg` hoặc `.png`
 
 ### Error: "Division by zero" trong COCO eval
+
 ```bash
 Warning: No detections/ground truths found
 ```
 
-**Solution**: 
+**Solution**:
+
 - Check labels có đúng format YOLO không
 - Verify class IDs match (0-based for YOLO, 1-based for COCO)
 
 ### Memory Error
+
 ```bash
 CUDA out of memory
 ```
 
-**Solution**: 
+**Solution**:
+
 - Reduce batch size trong inference
 - Process images sequentially (already done in script)
 - Use CPU inference: `device='cpu'`
@@ -257,10 +275,7 @@ evaluator = VisDroneEvaluator()
 _, gt_path = evaluator.create_coco_ground_truth()
 
 # Run single model
-pred_path = evaluator.run_inference(
-    "runs/detect/my_model/weights/best.pt",
-    "my_model"
-)
+pred_path = evaluator.run_inference("runs/detect/my_model/weights/best.pt", "my_model")
 
 # Get metrics
 metrics = evaluator.evaluate_coco_metrics(gt_path, pred_path, "my_model")
@@ -342,6 +357,7 @@ YOLOv8-P2 & 0.292 & 0.502 & 0.305 & 0.181 & 0.421 & 0.225 \\
 ## 🎯 Paper Writing Tips
 
 ### Abstract:
+
 ```
 "Evaluated on VisDrone test set, our method achieves X% AP@[0.5:0.95]
 with particularly strong performance on small objects (Y% AP_small),
@@ -349,6 +365,7 @@ representing a Z% improvement over baseline YOLOv8."
 ```
 
 ### Results Section:
+
 ```
 "Table X presents comprehensive COCO metrics. Our method excels at
 detecting small objects, achieving 0.231 AP_small compared to 0.152
@@ -356,6 +373,7 @@ for baseline YOLOv8, a 51.3% improvement."
 ```
 
 ### Discussion:
+
 ```
 "The substantial improvement in AR_small (0.278 vs 0.201) demonstrates
 our hierarchical attention mechanism effectively captures fine-grained
@@ -365,4 +383,3 @@ features critical for small object detection in aerial imagery."
 ---
 
 **Good luck with your evaluation and paper! 🚀📊**
-

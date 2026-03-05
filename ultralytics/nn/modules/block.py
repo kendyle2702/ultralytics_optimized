@@ -37,14 +37,12 @@ __all__ = (
     "C2fPSA",
     "C3Ghost",
     "C3k2",
-    "C3k2Ghost"
-    "C3x",
+    "C3k2GhostC3x",
     "CBFuse",
     "CBLinear",
     "ContrastiveHead",
     "GhostBottleneck",
-    "GhostC3k"
-    "HGBlock",
+    "GhostC3kHGBlock",
     "HGStem",
     "ImagePoolingAttn",
     "Proto",
@@ -1084,14 +1082,14 @@ class C3k2(C2f):
             C3k(self.c, self.c, 2, shortcut, g) if c3k else Bottleneck(self.c, self.c, shortcut, g) for _ in range(n)
         )
 
+
 class C3k2Ghost(C2f):
     """Ghost Implementation of CSP Bottleneck with 2 convolutions using Ghost convolutions."""
 
     def __init__(
         self, c1: int, c2: int, n: int = 1, c3k: bool = False, e: float = 0.5, g: int = 1, shortcut: bool = True
     ):
-        """
-        Initialize C3k2Ghost module.
+        """Initialize C3k2Ghost module.
 
         Args:
             c1 (int): Input channels.
@@ -1106,7 +1104,7 @@ class C3k2Ghost(C2f):
         # Replace Conv layers with GhostConv in C2f
         self.cv1 = GhostConv(c1, 2 * self.c, 1, 1)
         self.cv2 = GhostConv((2 + n) * self.c, c2, 1)
-        
+
         # Use C3Ghost when c3k=True, otherwise use GhostBottleneck
         if c3k:
             # Create custom C3Ghost that uses GhostConv instead of Conv
@@ -1115,12 +1113,12 @@ class C3k2Ghost(C2f):
         else:
             self.m = nn.ModuleList(GhostBottleneck(self.c, self.c) for _ in range(n))
 
+
 class GhostC3k(nn.Module):
     """C3k module using GhostConv instead of Conv."""
-    
+
     def __init__(self, c1: int, c2: int, n: int = 1, shortcut: bool = True, g: int = 1, e: float = 0.5, k: int = 3):
-        """
-        Initialize GhostC3k module.
+        """Initialize GhostC3k module.
 
         Args:
             c1 (int): Input channels.
@@ -1134,14 +1132,15 @@ class GhostC3k(nn.Module):
         super().__init__()
         c_ = int(c2 * e)  # hidden channels
         self.cv1 = GhostConv(c1, c_, 1, 1)
-        self.cv2 = GhostConv(c1, c_, 1, 1)  
+        self.cv2 = GhostConv(c1, c_, 1, 1)
         self.cv3 = GhostConv(2 * c_, c2, 1)
         self.m = nn.Sequential(*(GhostBottleneck(c_, c_) for _ in range(n)))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass through the Ghost CSP bottleneck with 3 convolutions."""
         return self.cv3(torch.cat((self.m(self.cv1(x)), self.cv2(x)), 1))
-    
+
+
 class C3k(C3):
     """C3k is a CSP bottleneck module with customizable kernel sizes for feature extraction in neural networks."""
 
