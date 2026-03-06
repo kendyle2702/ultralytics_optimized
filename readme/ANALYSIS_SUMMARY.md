@@ -11,11 +11,13 @@ Sau khi phân tích toàn bộ codebase của Ultralytics YOLO v8.3.228, dự á
 ### 1. **Backbone** ✅ 100% Hỗ Trợ
 
 **Hiện tại các phiên bản có sẵn:**
+
 - YOLO11 (mới nhất)
 - YOLO12, YOLO10
 - YOLOv9, YOLOv8, YOLOv6, YOLOv5, YOLOv3
 
 **Các mô-đun backbone có sẵn:**
+
 ```
 Conv, DWConv, GhostConv, Focus
 C2f, C3k2, C3, C3x, C3Ghost
@@ -26,35 +28,39 @@ HGBlock, HGStem
 ```
 
 **Cách tùy chỉnh:**
+
 - Sửa file YAML: Thay đổi layer sequence trong `backbone:` section
 - Không cần thay đổi code, chỉ cần thay layer name và parameters
 
 **Ví dụ:**
+
 ```yaml
 # Original
 - [-1, 2, C3k2, [256, False, 0.25]]
 
 # Custom
-- [-1, 2, C2f, [256, True]]           # Replace C3k2 with C2f
-- [-1, 2, RepConv, [256, 3]]         # Use RepConv
-- [-1, 2, GhostBottleneck, [256]]    # Lightweight option
+- [-1, 2, C2f, [256, True]] # Replace C3k2 with C2f
+- [-1, 2, RepConv, [256, 3]] # Use RepConv
+- [-1, 2, GhostBottleneck, [256]] # Lightweight option
 ```
 
 ### 2. **Neck** ✅ 100% Hỗ Trợ
 
 **Các phần Neck:**
+
 - Upsampling layers
 - Concatenation/Skip connections
 - Processing blocks (C2f, C3, etc.)
 - Attention modules
 
 **Tùy chỉnh:**
+
 ```yaml
 head:
-  - [-1, 1, nn.Upsample, [None, 2, "nearest"]]     # Custom upsample
-  - [[-1, 6], 1, Concat, [1]]                      # Skip from layer 6
-  - [-1, 2, C2fAttn, [512, 256, 8]]               # Attention block
-  - [-1, 2, C2f, [512]]                           # Processing
+  - [-1, 1, nn.Upsample, [None, 2, "nearest"]] # Custom upsample
+  - [[-1, 6], 1, Concat, [1]] # Skip from layer 6
+  - [-1, 2, C2fAttn, [512, 256, 8]] # Attention block
+  - [-1, 2, C2f, [512]] # Processing
 ```
 
 ### 3. **Loss Functions** ✅ 100% Hỗ Trợ
@@ -79,11 +85,13 @@ head:
 ```
 
 **Tùy chỉnh:**
+
 - Tạo class mới inherit từ `v8DetectionLoss`
 - Override `__call__` method
 - Set trong model.args hoặc trainer
 
 **Áp dụng:**
+
 ```python
 class CustomLoss(v8DetectionLoss):
     def __call__(self, preds, batch):
@@ -95,6 +103,7 @@ class CustomLoss(v8DetectionLoss):
 ### 4. **Activation Functions** ✅ 100% Hỗ Trợ
 
 **Cách tùy chỉnh:**
+
 ```yaml
 # Trong YAML
 activation: torch.nn.ReLU()
@@ -103,14 +112,17 @@ activation: torch.nn.SiLU()      # Default
 ```
 
 Hoặc trong code:
+
 ```python
 from ultralytics.nn.modules import Conv
+
 Conv.default_act = torch.nn.ReLU()
 ```
 
 ### 5. **Custom Modules** ✅ 100% Hỗ Trợ
 
 **Các module có sẵn:**
+
 ```
 Detect, Segment, Pose, OBB (task heads)
 Concat, Index (connection layers)
@@ -120,32 +132,33 @@ torchvision.* (torchvision modules)
 ```
 
 **Tạo module tùy chỉnh:**
+
 ```python
 # ultralytics/nn/modules/custom.py
 class CustomBlock(nn.Module):
     def __init__(self, c1, c2):
         super().__init__()
         # Define layers
-    
+
     def forward(self, x):
         return x
 
+
 # Register trong __init__.py
-from .custom import CustomBlock
 ```
 
 ---
 
 ## 📊 PHIÊN BẢN HIỆN TẠI
 
-| Thông Tin | Chi Tiết |
-|-----------|---------|
-| Version | 8.3.228 |
-| Python | 3.8+ |
-| PyTorch | 1.8+ |
-| Latest Model | YOLO11 |
+| Thông Tin    | Chi Tiết                                  |
+| ------------ | ----------------------------------------- |
+| Version      | 8.3.228                                   |
+| Python       | 3.8+                                      |
+| PyTorch      | 1.8+                                      |
+| Latest Model | YOLO11                                    |
 | Older Models | YOLO10, YOLO9, YOLO8, YOLO6, YOLO5, YOLO3 |
-| License | AGPL-3.0 |
+| License      | AGPL-3.0                                  |
 
 ---
 
@@ -186,7 +199,7 @@ Total Loss → Backward pass → Optimization
 
 ```yaml
 scales:
-  n: [0.50, 0.25, 1024]   # depth_mult, width_mult, max_channels
+  n: [0.50, 0.25, 1024] # depth_mult, width_mult, max_channels
   s: [0.50, 0.50, 1024]
   m: [0.50, 1.00, 512]
   l: [1.00, 1.00, 512]
@@ -194,11 +207,13 @@ scales:
 ```
 
 **Tác dụng:**
+
 - `depth` - Số lượng repeats của các block
 - `width` - Số channels
 - `max_channels` - Giới hạn tối đa channels
 
 **Cách sử dụng:**
+
 ```python
 # Load nano: yolo11n = yolo11.yaml with scale='n'
 model = YOLO("yolo11n.pt")
@@ -210,6 +225,7 @@ model = YOLO("custom.yaml")  # Use default scale or specify
 ### 2. Data Augmentation
 
 **Hiện có:**
+
 - Mosaic, Mixup, HSV adjustments
 - Spatial transforms (rotate, translate, scale)
 - Flip, Perspective, Brightness/Contrast
@@ -232,40 +248,45 @@ model = YOLO("custom.yaml")  # Use default scale or specify
 
 ## 💻 CÁC LỚP CHÍNH VÀ VỊ TRÍ
 
-| Component | File | Mục Đích |
-|-----------|------|---------|
-| **Model Definition** | `nn/tasks.py` | BaseModel, DetectionModel, parse_model() |
-| **Loss Functions** | `utils/loss.py` | Tất cả loss classes |
-| **Modules** | `nn/modules/` | Conv, C2f, C3k2, etc. |
-| **YAML Configs** | `cfg/models/` | Model architecture definitions |
-| **Trainer** | `engine/trainer.py` | Training loop base class |
-| **Task-specific** | `models/yolo/detect/` | Detection trainer/predictor |
+| Component            | File                  | Mục Đích                                 |
+| -------------------- | --------------------- | ---------------------------------------- |
+| **Model Definition** | `nn/tasks.py`         | BaseModel, DetectionModel, parse_model() |
+| **Loss Functions**   | `utils/loss.py`       | Tất cả loss classes                      |
+| **Modules**          | `nn/modules/`         | Conv, C2f, C3k2, etc.                    |
+| **YAML Configs**     | `cfg/models/`         | Model architecture definitions           |
+| **Trainer**          | `engine/trainer.py`   | Training loop base class                 |
+| **Task-specific**    | `models/yolo/detect/` | Detection trainer/predictor              |
 
 ---
 
 ## 🎯 QUI TRÌNH TÍCH HỢP CHO PAPER
 
 ### Bước 1: Thiết Kế Kiến Trúc
+
 ```
 Nghiên cứu → Lựa chọn thành phần → Tạo YAML
 ```
 
 ### Bước 2: Triển Khai
+
 ```
 Thay đổi YAML hoặc tạo custom code
 ```
 
 ### Bước 3: Training & Evaluation
+
 ```
 Train baseline → Train proposal → So sánh metrics
 ```
 
 ### Bước 4: Phân Tích & Báo Cáo
+
 ```
 FLOPs, params, speed, accuracy → Visualizations
 ```
 
 ### Bước 5: Công Bố
+
 ```
 Code repo → Model weights → Results
 ```
@@ -301,16 +322,19 @@ Energy per detection
 ## ⚠️ NHỮNG CẢN TRÁNH
 
 ### 1. **KHÔNG thể thay đổi trực tiếp:**
+
 - ❌ Số lớp detection output cố định (3 scales: P3, P4, P5)
 - ❌ Input size phải chia hết cho 32
 - ❌ Số channel phải hợp lệ (divisible by 8)
 
 ### 2. **Cần kiểm tra:**
+
 - ⚠️ Channel compatibility giữa layers
 - ⚠️ Shape matching tại concatenation points
 - ⚠️ Memory requirements cho batch size
 
 ### 3. **Best Practices:**
+
 - ✅ Always compare with baseline
 - ✅ Record all hyperparameters
 - ✅ Test incrementally
@@ -336,18 +360,21 @@ Codebase:
 Ba file hướng dẫn chi tiết đã được tạo:
 
 ### 1. **CUSTOMIZATION_GUIDE_VI.md** (600+ dòng)
+
 - Hướng dẫn toàn diện
 - Ví dụ chi tiết
 - Best practices
 - Debugging tips
 
 ### 2. **PRACTICAL_EXAMPLES.md** (500+ dòng)
+
 - 6 ví dụ thực tế
 - Custom loss functions
 - Architecture search
 - Ensemble models
 
 ### 3. **RESEARCH_QUICK_START_VI.md** (300+ dòng)
+
 - Quick reference
 - Common commands
 - Templates
@@ -389,7 +416,7 @@ Ba file hướng dẫn chi tiết đã được tạo:
 1. **Đọc files hướng dẫn**
    - Bắt đầu với `RESEARCH_QUICK_START_VI.md`
    - Sau đó đọc chi tiết `CUSTOMIZATION_GUIDE_VI.md`
-   - Tham khảo ví dụ trong `PRACTICAL_EXAMPLES.md`
+   - Than khảo ví dụ trong `PRACTICAL_EXAMPLES.md`
 
 2. **Tạo baseline**
    - Train model với YOLO11n trên dataset của bạn
@@ -434,4 +461,3 @@ Với khả năng tùy chỉnh backbone, neck, loss functions, và support cho c
 **Ultralytics Version**: 8.3.228  
 **Language**: Vietnamese  
 **Status**: ✅ Hoàn chỉnh
-

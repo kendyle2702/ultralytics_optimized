@@ -18,10 +18,9 @@ nano evaluate_models_coco_metrics.py
 ```python
 def main():
     """Main function to run evaluation."""
-    
     # Initialize evaluator
     evaluator = VisDroneEvaluator(dataset_root="/home/lqc/Research/Detection/datasets")
-    
+
     # Define model configurations
     model_configs = {
         "yolov8-base": "/path/to/yolov8_base/best.pt",
@@ -39,7 +38,6 @@ model_configs = {
     # Existing models
     "yolov8-base": "/home/lqc/Research/Papers/.../v8/best.pt",
     "yolov8-p2": "/home/lqc/Research/Papers/.../v8_p2/best.pt",
-    
     # ✨ ADD YOUR NEW MODEL HERE ✨
     "my-new-model": "/path/to/my_model/best.pt",
     "yolov11": "/path/to/yolov11/weights/best.pt",
@@ -76,7 +74,7 @@ nano model_paths_config.json
       "path": "/home/lqc/Research/.../v8/best.pt",
       "description": "YOLOv8m baseline"
     },
-    
+
     "my-new-model": {
       "path": "/path/to/my_model/best.pt",
       "description": "My awesome model"
@@ -93,14 +91,11 @@ Nếu muốn dùng config file, modify script:
 import json
 
 # Load config
-with open('model_paths_config.json', 'r') as f:
+with open("model_paths_config.json") as f:
     config = json.load(f)
 
 # Extract model paths
-model_configs = {
-    name: info['path'] 
-    for name, info in config['models'].items()
-}
+model_configs = {name: info["path"] for name, info in config["models"].items()}
 ```
 
 ---
@@ -110,17 +105,20 @@ model_configs = {
 Khi add model mới, script sẽ tự động tính toán:
 
 ### 1. Model Info:
+
 - ✅ **Parameters** (M) - Số lượng parameters
 - ✅ **FPS** - Frames per second (640x640)
 - ✅ **Latency** (ms) - Thời gian inference
 
 ### 2. COCO Metrics (12 chỉ số):
+
 - AP@[.5:.95], AP@.5, AP@.75
 - AP_small, AP_medium, AP_large
 - AR@1, AR@10, AR@100
 - AR_small, AR_medium, AR_large
 
 ### 3. Visualizations:
+
 - Efficiency scatter plot (FPS vs AP)
 - Parameters comparison
 - FPS comparison
@@ -170,20 +168,23 @@ model_configs = {
 ### Recommended naming format:
 
 ```python
-"{architecture}-{variant}-{modification}"
+"""{architecture}-{variant}-{modification}."""
 ```
 
 Examples:
+
 ```python
-"yolov8-base"              # Clear baseline
-"yolov8-p2"                # With P2 head
-"yolov8-p2-cbam"           # P2 + CBAM
-"yolov8-p2-cbam-scdown"    # P2 + CBAM + SCDown
-"yolov10-custom"           # Custom YOLOv10
-"yolov11-attention"        # YOLOv11 with attention
+"""yolov8-base."""  # Clear baseline
+
+"yolov8-p2"  # With P2 head
+"yolov8-p2-cbam"  # P2 + CBAM
+"yolov8-p2-cbam-scdown"  # P2 + CBAM + SCDown
+"yolov10-custom"  # Custom YOLOv10
+"yolov11-attention"  # YOLOv11 with attention
 ```
 
 ### Naming tips:
+
 - ✅ Use lowercase with hyphens
 - ✅ Be descriptive but concise
 - ✅ Include key modifications
@@ -231,6 +232,7 @@ results/coco_metrics/
 ```
 
 Ví dụ với model name `"yolov11-custom"`:
+
 ```
 coco_pred_yolov11-custom.json
 metrics_yolov11-custom.json
@@ -251,7 +253,6 @@ model_configs = {
     "yolov8-p2-cbam-scdown": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v8_p2_cbam_scdown/best.pt",
     "yolov10": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v10/best.pt",
     "yolov12": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v12/best.pt",
-    
     # === ADD NEW MODELS BELOW ===
     # "model-name": "/path/to/model/best.pt",
 }
@@ -306,6 +307,7 @@ model_configs = {
 ```
 
 **Solution**: Check đường dẫn file:
+
 ```bash
 ls -lh /path/to/model.pt
 ```
@@ -317,14 +319,18 @@ ls -lh /path/to/model.pt
 ```
 
 **Solutions**:
+
 1. Verify model file không corrupt:
+
    ```bash
    file /path/to/model.pt
    ```
 
 2. Test load manually:
+
    ```python
    from ultralytics import YOLO
+
    model = YOLO("/path/to/model.pt")
    ```
 
@@ -335,10 +341,12 @@ ls -lh /path/to/model.pt
 Nếu 2 models cùng tên, kết quả sẽ bị overwrite!
 
 **Solution**: Dùng unique names:
+
 ```python
-"yolov8-base"     # ✅ Good
+"""yolov8-base."""  # ✅ Good
+
 "yolov8-base-v2"  # ✅ Good
-"yolov8-base"     # ❌ Duplicate!
+"yolov8-base"  # ❌ Duplicate!
 ```
 
 ---
@@ -350,12 +358,13 @@ Script được thiết kế để handle nhiều models:
 ```python
 # Có thể add 10, 20, 50+ models!
 model_configs = {
-    f"model-{i}": f"/path/model_{i}.pt" 
+    f"model-{i}": f"/path/model_{i}.pt"
     for i in range(1, 51)  # 50 models
 }
 ```
 
 **Note**: Mỗi model mất ~5-10 phút cho full evaluation, nên:
+
 - 6 models: ~30-60 phút
 - 10 models: ~50-100 phút
 - 20 models: ~100-200 phút
@@ -385,6 +394,7 @@ model_configs = {
 **That's it! 🎉**
 
 Script sẽ tự động:
+
 - ✅ Load model
 - ✅ Count parameters
 - ✅ Measure FPS
@@ -396,4 +406,3 @@ Script sẽ tự động:
 ---
 
 **Happy evaluating! 🚀**
-

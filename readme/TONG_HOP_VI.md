@@ -3,24 +3,26 @@
 ## 🔍 Câu Hỏi Của Bạn
 
 **Bạn hỏi:**
+
 > "Ultralytics có hỗ trợ việc thay đổi backbone, neck, loss function của YOLO26 không? Biến đổi mặc định là gì? Cách tích hợp thay đổi kiến trúc tối ưu để viết paper?"
 
 ## ✅ ĐÁP ÁN TRỰC TIẾP
 
 ### 1. **Phiên Bản Hiện Tại**
+
 - ❌ **YOLO26 chưa tồn tại**
 - ✅ **Phiên bản hiện tại: YOLO11** (v8.3.228)
 - Các phiên bản cũ: YOLO10, YOLO9, YOLO8, YOLO6, YOLO5, YOLO3
 
 ### 2. **Hỗ Trợ Tùy Chỉnh - KẾT LUẬN CHÍNH**
 
-| Thành Phần | Hỗ Trợ | Độ Khó | Cách Làm |
-|-----------|--------|--------|---------|
-| **Backbone** | ✅ 100% | ⭐ Dễ | Sửa YAML |
-| **Neck** | ✅ 100% | ⭐ Dễ | Sửa YAML |
-| **Loss Functions** | ✅ 100% | ⭐⭐ TB | Code Python |
-| **Activation** | ✅ 100% | ⭐ Dễ | YAML/Code |
-| **Custom Modules** | ✅ 100% | ⭐⭐⭐ KHÓ | Tạo class |
+| Thành Phần         | Hỗ Trợ  | Độ Khó     | Cách Làm    |
+| ------------------ | ------- | ---------- | ----------- |
+| **Backbone**       | ✅ 100% | ⭐ Dễ      | Sửa YAML    |
+| **Neck**           | ✅ 100% | ⭐ Dễ      | Sửa YAML    |
+| **Loss Functions** | ✅ 100% | ⭐⭐ TB    | Code Python |
+| **Activation**     | ✅ 100% | ⭐ Dễ      | YAML/Code   |
+| **Custom Modules** | ✅ 100% | ⭐⭐⭐ KHÓ | Tạo class   |
 
 **KẾT LUẬN: ✅ HỖTRỢ ĐẦY ĐỦ TẤT CẢ**
 
@@ -65,11 +67,11 @@
 
 ```yaml
 scales:
-  n: [0.33, 0.25, 1024]   # nano (nhẹ)
-  s: [0.33, 0.50, 1024]   # small
-  m: [0.67, 0.75, 768]    # medium
-  l: [1.00, 1.00, 512]    # large
-  x: [1.00, 1.25, 512]    # extra-large
+  n: [0.33, 0.25, 1024] # nano (nhẹ)
+  s: [0.33, 0.50, 1024] # small
+  m: [0.67, 0.75, 768] # medium
+  l: [1.00, 1.00, 512] # large
+  x: [1.00, 1.25, 512] # extra-large
 ```
 
 - `depth_multiple` - Số repeats
@@ -83,25 +85,28 @@ scales:
 ### **Phương Pháp 1: Thay Backbone (Dễ Nhất)**
 
 **Bước 1:** Copy file YAML
+
 ```bash
 cp ultralytics/cfg/models/11/yolo11.yaml my_backbone.yaml
 ```
 
 **Bước 2:** Sửa backbone
+
 ```yaml
 # my_backbone.yaml
 backbone:
   - [-1, 1, Conv, [64, 3, 2]]
-  - [-1, 2, C2f, [128, True]]        # ← Thay C3k2 thành C2f
+  - [-1, 2, C2f, [128, True]] # ← Thay C3k2 thành C2f
   - [-1, 1, Conv, [256, 3, 2]]
   - [-1, 2, C2f, [256, True]]
-  - [-1, 1, SPPF, [512, 5]]          # ← Thay SPPF
+  - [-1, 1, SPPF, [512, 5]] # ← Thay SPPF
 
 head:
   # ... giữ nguyên hoặc sửa
 ```
 
 **Bước 3:** Train
+
 ```python
 from ultralytics import YOLO
 
@@ -116,6 +121,7 @@ results = model.train(
 ```
 
 **Bước 4:** So sánh
+
 ```python
 # Baseline
 model_baseline = YOLO("yolo11n.yaml")
@@ -139,12 +145,13 @@ backbone:
 head:
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 6], 1, Concat, [1]]
-  - [-1, 2, C2fAttn, [512, 256, 8]]  # ← Thêm attention
-  
+  - [-1, 2, C2fAttn, [512, 256, 8]] # ← Thêm attention
+
   - [-1, 1, nn.Upsample, [None, 2, "nearest"]]
   - [[-1, 4], 1, Concat, [1]]
-  - [-1, 2, C2fAttn, [256, 128, 8]]  # ← Thêm attention
-  
+  - [-1, 2, C2fAttn, [256, 128, 8]] # ← Thêm attention
+
+
   # ... rest ...
 ```
 
@@ -154,6 +161,7 @@ head:
 # custom_loss.py
 from ultralytics.utils.loss import v8DetectionLoss
 
+
 class CustomLoss(v8DetectionLoss):
     def __call__(self, preds, batch):
         # Custom loss logic
@@ -161,13 +169,16 @@ class CustomLoss(v8DetectionLoss):
         # Modify loss if needed
         return loss
 
+
 # Sử dụng
 from ultralytics.models.yolo.detect.train import DetectionTrainer
 from ultralytics.nn.tasks import DetectionModel
 
+
 class CustomModel(DetectionModel):
     def init_criterion(self):
         return CustomLoss(self)
+
 
 class CustomTrainer(DetectionTrainer):
     def get_model(self, cfg=None, weights=None, verbose=True):
@@ -175,6 +186,7 @@ class CustomTrainer(DetectionTrainer):
         if weights:
             model.load(weights)
         return model
+
 
 # Train
 trainer = CustomTrainer(cfg=dict(model="yolo11n.yaml", data="coco8.yaml"))
@@ -188,30 +200,30 @@ trainer.train()
 ```
 1️⃣ THIẾT KẾ KIẾN TRÚC
    Chọn thành phần cần thay: backbone? neck? loss?
-   
+
 2️⃣ TẠO YAML CONFIGURATION
    Sao chép từ template, sửa thông số
-   
+
 3️⃣ TRAIN BASELINE
    yolo detect train model=yolo11n.yaml data=your_data.yaml epochs=100
    Ghi lại: mAP, FPS, parameters, memory
-   
+
 4️⃣ TRAIN PROPOSAL
    yolo detect train model=custom.yaml data=your_data.yaml epochs=100
    Ghi lại: cùng metrics
-   
+
 5️⃣ SO SÁNH & PHÂN TÍCH
-   - Cải tiến mAP (%) 
+   - Cải tiến mAP (%)
    - Tăng FPS (%)
    - Thay đổi parameters (%)
    - Trade-off analysis
-   
+
 6️⃣ VISUALIZATION
    Vẽ biểu đồ so sánh
    - mAP vs Parameters
    - mAP vs Speed
    - Efficiency frontier
-   
+
 7️⃣ VIẾT BÁOCÁO/PAPER
    - Algorithm description
    - Experimental results
@@ -229,7 +241,7 @@ trainer.train()
 - mAP@0.5
 - Precision & Recall
 
-# Performance  
+# Performance
 - Inference time (ms)
 - FPS (frames/second)
 
@@ -256,15 +268,15 @@ yolo detect train model=cfg/models/11/custom_backbone.yaml data=coco8.yaml epoch
 
 # Custom with more config
 yolo detect train \
-    model=custom.yaml \
-    data=coco8.yaml \
-    epochs=100 \
-    imgsz=640 \
-    batch=16 \
-    device=0 \
-    patience=20 \
-    project=runs/my_research \
-    name=experiment_v1
+  model=custom.yaml \
+  data=coco8.yaml \
+  epochs=100 \
+  imgsz=640 \
+  batch=16 \
+  device=0 \
+  patience=20 \
+  project=runs/my_research \
+  name=experiment_v1
 ```
 
 ---
@@ -274,39 +286,44 @@ yolo detect train \
 Tôi đã tạo **4 file hướng dẫn chi tiết:**
 
 ### 1. **ANALYSIS_SUMMARY.md** (Đọc Đầu Tiên!)
-   - Tổng quan toàn diện
-   - Khả năng hỗ trợ
-   - Các phần có thể thay đổi
-   - Qui trình nghiên cứu
-   - ⏱️ 10-15 phút
+
+- Tổng quan toàn diện
+- Khả năng hỗ trợ
+- Các phần có thể thay đổi
+- Qui trình nghiên cứu
+- ⏱️ 10-15 phút
 
 ### 2. **RESEARCH_QUICK_START_VI.md** (5 Phút)
-   - Quick reference
-   - Common commands
-   - Template code
-   - Cheatsheet
-   - ⏱️ 5 phút đủ để bắt đầu
+
+- Quick reference
+- Common commands
+- Template code
+- Cheatsheet
+- ⏱️ 5 phút đủ để bắt đầu
 
 ### 3. **CUSTOMIZATION_GUIDE_VI.md** (Chi Tiết - 600+ dòng)
-   - Giải thích chi tiết từng phần
-   - Ví dụ cụ thể cho mỗi thay đổi
-   - Best practices
-   - Debugging tips
-   - ⏱️ 30-40 phút đọc kỹ
+
+- Giải thích chi tiết từng phần
+- Ví dụ cụ thể cho mỗi thay đổi
+- Best practices
+- Debugging tips
+- ⏱️ 30-40 phút đọc kỹ
 
 ### 4. **PRACTICAL_EXAMPLES.md** (6 Ví Dụ - 500+ dòng)
-   - Ví dụ 1: Thay C2f ↔ C3
-   - Ví dụ 2: Thêm Attention
-   - Ví dụ 3: Custom Loss Function
-   - Ví dụ 4: Architecture Search
-   - Ví dụ 5: Model Ensemble
-   - Ví dụ 6: Visualization
-   - ⏱️ Copy-paste được ngay!
+
+- Ví dụ 1: Thay C2f ↔ C3
+- Ví dụ 2: Thêm Attention
+- Ví dụ 3: Custom Loss Function
+- Ví dụ 4: Architecture Search
+- Ví dụ 5: Model Ensemble
+- Ví dụ 6: Visualization
+- ⏱️ Copy-paste được ngay!
 
 ### 5. **README_RESEARCH_VI.md** (Chỉ Mục)
-   - Tổng hợp tất cả files
-   - FAQ
-   - Getting started guide
+
+- Tổng hợp tất cả files
+- FAQ
+- Getting started guide
 
 ---
 
@@ -341,26 +358,33 @@ Tôi đã tạo **4 file hướng dẫn chi tiết:**
 ## 🎯 KHUYẾN NGHỊ HÀNH ĐỘNG
 
 ### Step 1: Hiểu (15 phút)
+
 Đọc: `ANALYSIS_SUMMARY.md`
 
 ### Step 2: Bắt Đầu (5 phút)
+
 Đọc: `RESEARCH_QUICK_START_VI.md`
 
 ### Step 3: Tạo Baseline (30 phút)
+
 ```bash
 yolo detect train model=yolo11n.yaml data=your_data.yaml epochs=10
 ```
 
 ### Step 4: Chi Tiết (40 phút)
+
 Đọc: `CUSTOMIZATION_GUIDE_VI.md`
 
 ### Step 5: Code Ví Dụ (30 phút)
+
 Đọc: `PRACTICAL_EXAMPLES.md`
 
 ### Step 6: Thực Hiện (1-2 giờ)
+
 Tạo custom model và train
 
 ### Step 7: So Sánh & Publish
+
 Viết paper/report
 
 ---
@@ -368,6 +392,7 @@ Viết paper/report
 ## 🔥 TOP 3 ỨNG DỤNG PHỔ BIẾN
 
 ### 1. **Lightweight Model cho Edge Devices**
+
 ```yaml
 # Sử dụng: GhostConv, DWConv
 Giảm 50% parameters
@@ -376,6 +401,7 @@ Giảm 50% parameters
 ```
 
 ### 2. **Accuracy-Focused Model**
+
 ```yaml
 # Sử dụng: C2fAttn, Custom Loss
 ↑ 1-2% mAP
@@ -383,6 +409,7 @@ Giảm 50% parameters
 ```
 
 ### 3. **Imbalanced Dataset**
+
 ```yaml
 # Sử dụng: VarifocalLoss
 ↑ Recall trên lớp minority
@@ -410,7 +437,7 @@ A: Chỉ cần: `pip install ultralytics` + PyTorch.
 
 ---
 
-## 📞 LIÊN HỆ & THAM KHẢO
+## 📞 LIÊN HỆ & THAN KHẢO
 
 - **Docs**: https://docs.ultralytics.com
 - **GitHub**: https://github.com/ultralytics/ultralytics
@@ -441,28 +468,32 @@ A: Chỉ cần: `pip install ultralytics` + PyTorch.
 ### TRẢ LỜI TRỰC TIẾP CÂU HỎI CỦA BẠN
 
 **1. Có hỗ trợ thay backbone, neck, loss?**
-   → ✅ **CÓ - HỖTRỢ 100%**
+→ ✅ **CÓ - HỖTRỢ 100%**
 
 **2. Biến đổi mặc định là gì?**
-   → Scaling factors (n, s, m, l, x), Loss functions, Activation functions
+→ Scaling factors (n, s, m, l, x), Loss functions, Activation functions
 
 **3. Cách tích hợp để viết paper?**
-   → 7 bước rõ ràng (xem qui trình phía trên)
+→ 7 bước rõ ràng (xem qui trình phía trên)
 
 ---
 
 ## 🚀 HÀNH ĐỘNG NGAY
 
 ### Nếu bạn có **5 phút**:
+
 → Đọc `ANALYSIS_SUMMARY.md`
 
 ### Nếu bạn có **15 phút**:
+
 → Đọc `RESEARCH_QUICK_START_VI.md`
 
 ### Nếu bạn có **1 giờ**:
+
 → Đọc `CUSTOMIZATION_GUIDE_VI.md` + Thực hành
 
 ### Nếu bạn có **2 giờ**:
+
 → Đọc tất cả + Chạy ví dụ từ `PRACTICAL_EXAMPLES.md`
 
 ---
@@ -473,4 +504,3 @@ A: Chỉ cần: `pip install ultralytics` + PyTorch.
 **Language: Vietnamese**
 
 **Sẵn sàng bắt đầu nghiên cứu? Let's go! 🚀**
-
