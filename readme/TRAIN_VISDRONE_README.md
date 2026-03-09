@@ -1,16 +1,19 @@
 # YOLOv12n Training on VisDrone Dataset
 
 ## 📝 Mô tả
+
 Scripts để training model YOLOv12n trên dataset VisDrone và đánh giá metrics trên tập test.
 
 ## 🚀 Cách sử dụng
 
 ### Option 1: Script đầy đủ (Khuyến nghị)
+
 ```bash
 python train_yolov12n_visdrone.py
 ```
 
 Script này sẽ:
+
 - ✅ Training YOLOv12n từ đầu hoặc từ pretrained weights
 - ✅ Tự động validate trong quá trình training
 - ✅ Đánh giá trên validation set
@@ -18,6 +21,7 @@ Script này sẽ:
 - ✅ Lưu tất cả plots và kết quả
 
 ### Option 2: Script đơn giản
+
 ```bash
 python train_yolov12n_simple.py
 ```
@@ -25,6 +29,7 @@ python train_yolov12n_simple.py
 ### Option 3: Command line trực tiếp
 
 **Training:**
+
 ```bash
 yolo train \
   model=ultralytics/cfg/models/12/yolo12.yaml \
@@ -37,6 +42,7 @@ yolo train \
 ```
 
 **Validate trên validation set:**
+
 ```bash
 yolo val \
   model=runs/detect/yolo12n_visdrone/weights/best.pt \
@@ -48,6 +54,7 @@ yolo val \
 ```
 
 **Test trên test set:**
+
 ```bash
 yolo val \
   model=runs/detect/yolo12n_visdrone/weights/best.pt \
@@ -63,11 +70,13 @@ yolo val \
 Dataset sẽ tự động được tải về lần đầu tiên chạy.
 
 **Cấu trúc:**
+
 - Training: 6,471 images
 - Validation: 548 images
 - Test: 1,610 images
 
 **Classes (10 classes):**
+
 1. pedestrian
 2. people
 3. bicycle
@@ -84,11 +93,13 @@ Dataset sẽ tự động được tải về lần đầu tiên chạy.
 Sau khi training xong, bạn sẽ nhận được:
 
 **Training metrics:**
+
 - Loss curves (box, cls, dfl)
 - Learning rate schedule
 - mAP progression
 
 **Validation metrics:**
+
 - mAP@0.5
 - mAP@0.5:0.95
 - Precision
@@ -96,6 +107,7 @@ Sau khi training xong, bạn sẽ nhận được:
 - F1-score
 
 **Test metrics:**
+
 - mAP@0.5
 - mAP@0.5:0.95
 - mAP@0.75
@@ -106,6 +118,7 @@ Sau khi training xong, bạn sẽ nhận được:
 ## 📁 Kết quả
 
 Kết quả được lưu tại:
+
 ```
 runs/detect/yolo12n_visdrone/
 ├── weights/
@@ -127,15 +140,15 @@ Bạn có thể điều chỉnh các hyperparameters trong script:
 
 ```python
 model.train(
-    epochs=300,           # Số epochs
-    batch=16,             # Batch size (tăng nếu GPU đủ RAM)
-    imgsz=640,            # Image size
-    lr0=0.01,             # Learning rate
-    optimizer="AdamW",    # Optimizer: SGD, Adam, AdamW, NAdam
-    device=0,             # GPU device: 0, [0,1], 'cpu'
-    workers=8,            # Số workers cho dataloader
-    patience=100,         # Early stopping patience
-    # ... và nhiều tham số khác
+    epochs=300,  # Số epochs
+    batch=16,  # Batch size (tăng nếu GPU đủ RAM)
+    imgsz=640,  # Image size
+    lr0=0.01,  # Learning rate
+    optimizer="AdamW",  # Optimizer: SGD, Adam, AdamW, NAdam
+    device=0,  # GPU device: 0, [0,1], 'cpu'
+    workers=8,  # Số workers cho dataloader
+    patience=100,  # Early stopping patience
+    # ... và nhiều than số khác
 )
 ```
 
@@ -153,7 +166,7 @@ model.train(
 3. **Resume training:** Nếu bị gián đoạn, thêm `resume=True` để tiếp tục
 4. **Multi-GPU:** Sử dụng `device=[0,1,2,3]` cho multi-GPU training
 
-## 📚 Tài liệu tham khảo
+## 📚 Tài liệu than khảo
 
 - [Ultralytics Docs](https://docs.ultralytics.com)
 - [VisDrone Dataset](https://github.com/VisDrone/VisDrone-Dataset)
