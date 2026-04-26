@@ -296,8 +296,8 @@ class VisDroneEvaluator:
         
         # Save predictions
         pred_path = self.results_dir / f"coco_pred_{model_name}.json"
-        with open(pred_path, 'w') as f:
-            json.dump(coco_predictions, f)
+        # with open(pred_path, 'w') as f:
+        #     json.dump(coco_predictions, f)
         
         print(f"✅ Predictions saved: {pred_path}")
         print(f"   Total detections: {len(coco_predictions)}")
