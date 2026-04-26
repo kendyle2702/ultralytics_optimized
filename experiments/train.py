@@ -12,11 +12,10 @@ from ultralytics import YOLO
 if __name__ == "__main__":
     # Load model - YOLOv8n pretrained
     # model = YOLO("yolov8n.pt")
-    model = YOLO("yolov8n.pt")
-    # model = YOLO("yolo12n.pt")
-    #model = YOLO("ultralytics/cfg/models/v8/yolov8n-visdrone.yaml")
+    #model = YOLO("ultralytics/cfg/models/v8/yolov8-CBAM.yaml")
+    model = YOLO("ultralytics/cfg/models/v8/yolov8-SE.yaml")
     
-    experiment_name = "yolov8n_visdrone_people"
+    experiment_name = "yolov8n_visdrone_people_SE"
     
     # Training configuration
     # Với VisDrone-people dataset:
