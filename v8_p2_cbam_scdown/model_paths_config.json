@@ -1,0 +1,31 @@
+{
+  "comment": "Update these paths to your trained model weights",
+  "dataset_root": "/home/lqc/Research/Detection/datasets",
+  "models": {
+    "yolov8-base": {
+      "path": "runs/detect/yolov8m_baseline/weights/best.pt",
+      "description": "YOLOv8m baseline (P3-P5)"
+    },
+    "yolov8-p2": {
+      "path": "runs/detect/yolov8m_p2/weights/best.pt",
+      "description": "YOLOv8m with P2 head (P2-P5)"
+    },
+    "yolov8-p2-cbam": {
+      "path": "runs/detect/yolov8_visdrone_people/weights/best.pt",
+      "description": "YOLOv8m with P2 + CBAM attention"
+    },
+    "yolov8-p2-cbam-scdown": {
+      "path": "runs/detect/yolov8m_p2_cbam_scdown/weights/best.pt",
+      "description": "YOLOv8m with P2 + CBAM + SCDown"
+    },
+    "yolov10": {
+      "path": "runs/detect/yolov10m/weights/best.pt",
+      "description": "YOLOv10m baseline"
+    },
+    "yolov12": {
+      "path": "runs/detect/yolov12m/weights/best.pt",
+      "description": "YOLOv12m baseline"
+    }
+  }
+}
+

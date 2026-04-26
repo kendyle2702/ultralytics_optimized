@@ -1,0 +1,21 @@
+% LaTeX table for paper
+\begin{table}[htbp]
+\centering
+\caption{Quantitative Feature Map Analysis: Base vs Optimized Model}
+\label{tab:feature_statistics}
+\begin{tabular}{lccccccc}
+\hline
+\textbf{Layer} & \multicolumn{3}{c}{\textbf{Channel Variance}} & \multicolumn{3}{c}{\textbf{Sparsity}} \\
+\cline{2-7}
+ & Base & Opt. & Improvement & Base & Opt. & Change \\
+\hline
+FPN Upsample & 0.0289 & 0.1610 & +457.68\% & 0.8514 & 0.4915 & -42.27\% \\
+FPN C2f & 0.0681 & 0.1976 & +190.26\% & 0.5870 & 0.4938 & -15.88\% \\
+FPN Concat & 0.1004 & 0.2658 & +164.74\% & 0.5481 & 0.5039 & -8.07\% \\
+Neck Conv & 0.2014 & 0.3338 & +65.74\% & 0.6130 & 0.5065 & -17.38\% \\
+Neck C2f & 0.1181 & 0.2482 & +110.23\% & 0.6403 & 0.5248 & -18.04\% \\
+\hline
+\textbf{Average} & - & - & \textbf{+197.73\%} & - & - & \textbf{-20.33\%} \\
+\hline
+\end{tabular}
+\end{table}

@@ -12,7 +12,7 @@ from ultralytics import YOLO
 if __name__ == "__main__":
     # Load model - YOLOv8n pretrained
     # model = YOLO("yolov8n.pt")
-    model = YOLO("yolov8s.pt")
+    model = YOLO("yolov8n.pt")
     # model = YOLO("yolo12n.pt")
     
     # Training configuration
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         patience=50,             # Early stopping sau 50 epochs không cải thiện
         
         # Batch và image size (giữ mặc định hoặc tùy chỉnh theo GPU)
-        batch=16,                # Batch size mặc định
+        batch=32,                # Batch size mặc định
         imgsz=640,               # Image size mặc định của YOLO
         
         # Checkpoints và logging

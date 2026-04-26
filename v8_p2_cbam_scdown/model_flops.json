@@ -1,0 +1,42 @@
+{
+  "yolov8s": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v8s/best.pt",
+    "FLOPs_G": 14.3234816,
+    "params_M": 11.135987
+  },
+  "yolov8-base": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v8/best.pt",
+    "FLOPs_G": 4.0970752,
+    "params_M": 3.011043
+  },
+  "yolov8-p2": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v8_p2/best.pt",
+    "FLOPs_G": 6.1791104,
+    "params_M": 2.926692
+  },
+  "yolov8-p2-cbam": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v8_p2_cbam/best.pt",
+    "FLOPs_G": 6.183480416,
+    "params_M": 2.932104
+  },
+  "yolov8-p2-cbam-scdown": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v8_p2_cbam_scdown/best.pt",
+    "FLOPs_G": 6.067768416,
+    "params_M": 2.852296
+  },
+  "yolov10": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v10/best.pt",
+    "FLOPs_G": 4.19648,
+    "params_M": 2.70743
+  },
+  "yolov12": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v12/best.pt",
+    "FLOPs_G": 3.2399104,
+    "params_M": 2.568243
+  },
+  "yolov11": {
+    "path": "/home/lqc/Research/Papers/Optimized_YOLO_tiny_person/v11/best.pt",
+    "FLOPs_G": 3.2203008,
+    "params_M": 2.590035
+  }
+}
