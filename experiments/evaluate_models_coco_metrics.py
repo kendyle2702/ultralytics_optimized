@@ -465,14 +465,15 @@ def main():
     evaluator = VisDroneEvaluator(dataset_root="/home/lqc/Research/Detection/datasets")
 
     model_configs = {
-        "yolov8s":              "/home/lqc/Research/Papers/HALE_YOLO/v8s/best.pt",
-        "yolov8-base":          "/home/lqc/Research/Papers/HALE_YOLO/v8/best.pt",
-        "yolov8-p2":            "/home/lqc/Research/Papers/HALE_YOLO/v8_p2/best.pt",
-        "yolov8-p2-cbam":       "/home/lqc/Research/Papers/HALE_YOLO/v8_p2_cbam/best.pt",
-        "yolov8-p2-cbam-scdown": "/home/lqc/Research/Papers/HALE_YOLO/v8_p2_cbam_scdown/best.pt",
-        "yolov10":              "/home/lqc/Research/Papers/HALE_YOLO/v10/best.pt",
-        "yolov12":              "/home/lqc/Research/Papers/HALE_YOLO/v12/best.pt",
-        "yolov11":              "/home/lqc/Research/Papers/HALE_YOLO/v11/best.pt",
+        "yolov8-SE":              "/home/lqc/Research/Papers/CompareAttention/v8-se/best.pt",
+        # "yolov8s":              "/home/lqc/Research/Papers/HALE_YOLO/v8s/best.pt",
+        # "yolov8-base":          "/home/lqc/Research/Papers/HALE_YOLO/v8/best.pt",
+        # "yolov8-p2":            "/home/lqc/Research/Papers/HALE_YOLO/v8_p2/best.pt",
+        # "yolov8-p2-cbam":       "/home/lqc/Research/Papers/HALE_YOLO/v8_p2_cbam/best.pt",
+        # "yolov8-p2-cbam-scdown": "/home/lqc/Research/Papers/HALE_YOLO/v8_p2_cbam_scdown/best.pt",
+        # "yolov10":              "/home/lqc/Research/Papers/HALE_YOLO/v10/best.pt",
+        # "yolov12":              "/home/lqc/Research/Papers/HALE_YOLO/v12/best.pt",
+        # "yolov11":              "/home/lqc/Research/Papers/HALE_YOLO/v11/best.pt",
     }
 
     print("\n" + "="*80)
