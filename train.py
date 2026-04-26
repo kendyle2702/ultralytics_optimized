@@ -14,6 +14,9 @@ if __name__ == "__main__":
     # model = YOLO("yolov8n.pt")
     model = YOLO("yolov8n.pt")
     # model = YOLO("yolo12n.pt")
+    #model = YOLO("ultralytics/cfg/models/v8/yolov8n-visdrone.yaml")
+    
+    experiment_name = "yolov8n_visdrone_people"
     
     # Training configuration
     # Với VisDrone-people dataset:
@@ -37,7 +40,7 @@ if __name__ == "__main__":
         save=True,               # Lưu checkpoint
         save_period=-1,          # Không lưu checkpoint theo epoch (chỉ lưu best và last)
         project="runs/detect",   # Thư mục project
-        name="yolov8n_visdrone_people",  # Tên experiment
+        name=experiment_name,  # Tên experiment
         exist_ok=False,          # Tạo folder mới nếu đã tồn tại
     )
     
