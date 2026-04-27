@@ -1,7 +1,7 @@
-
 ## Kiến trúc YOLOv8 - Tổng quan nhanh
 
 Kiến trúc gồm 3 phần chính:
+
 - **Backbone** (layer 0-9): Trích xuất đặc trưng đa tầng, tạo ra feature map P3, P4, P5
 - **Neck/FPN** (layer 10-21): Fuse đặc trưng đa tầng qua top-down và bottom-up path
 - **Detect Head** (layer 22): Decoupled head cho classification + regression
@@ -62,29 +62,33 @@ Kiến trúc gồm 3 phần chính:
 ## Khuyến nghị chiến lược
 
 ### Nếu ưu tiên **hiệu quả cao, chi phí thấp** (khuyến nghị bắt đầu từ đây):
+
 - Đặt **1 attention block sau SPPF** (sau layer 9) -- đây là "sweet spot" kinh điển
 
 ### Nếu muốn **cải thiện phát hiện vật nhỏ**:
+
 - Thêm attention sau layer 15 (output P3/8 trong Neck) và sau layer 9
 
 ### Nếu muốn **tối đa hóa hiệu suất** (chấp nhận tăng FLOPs):
+
 - Đặt sau layer 9 + sau layer 12, 15, 18, 21 (cuối mỗi C2f trong Neck)
 
 ### Nếu dataset **đa dạng kích thước vật thể**:
+
 - Đặt sau layer 4, 6, 8 trong backbone + sau layer 9
 
 ---
 
 ## So sánh nhanh các loại Attention phổ biến
 
-| Attention | Channel | Spatial | Params thêm | Gợi ý |
-|-----------|---------|---------|-------------|--------|
-| **SE** | Yes | No | Rất ít | Baseline tốt, nhẹ nhất |
-| **ECA** | Yes | No | Gần 0 | Nhẹ hơn SE, hiệu quả tương đương |
-| **CBAM** | Yes | Yes | Ít | Cân bằng tốt, phổ biến nhất với YOLO |
-| **CA** (Coordinate) | Yes | Yes (1D) | Ít | Tốt cho vật thể dài/hẹp |
-| **SimAM** | Yes | Yes | **0 param** | Không thêm param, parameter-free |
-| **GAM** | Yes | Yes | Trung bình | Mạnh nhưng nặng hơn |
+| Attention           | Channel | Spatial  | Params thêm | Gợi ý                                |
+| ------------------- | ------- | -------- | ----------- | ------------------------------------ |
+| **SE**              | Yes     | No       | Rất ít      | Baseline tốt, nhẹ nhất               |
+| **ECA**             | Yes     | No       | Gần 0       | Nhẹ hơn SE, hiệu quả tương đương     |
+| **CBAM**            | Yes     | Yes      | Ít          | Cân bằng tốt, phổ biến nhất với YOLO |
+| **CA** (Coordinate) | Yes     | Yes (1D) | Ít          | Tốt cho vật thể dài/hẹp              |
+| **SimAM**           | Yes     | Yes      | **0 param** | Không thêm param, parameter-free     |
+| **GAM**             | Yes     | Yes      | Trung bình  | Mạnh nhưng nặng hơn                  |
 
 ---
 

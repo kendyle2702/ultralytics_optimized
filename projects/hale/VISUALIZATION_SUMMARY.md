@@ -3,15 +3,18 @@
 ## ✅ Đã Hoàn Thành
 
 ### 1. Feature Map Extraction & Analysis ✅
+
 - **Script**: `feature_map_comparison.py`
 - **Output**: 21 visualization files
 - **Metrics**: Channel variance & Sparsity computed
 
-### 2. Publication-Ready Figures ✅  
+### 2. Publication-Ready Figures ✅
+
 - **Script**: `generate_paper_figures.py`
 - **Output**: 4 high-quality figures + LaTeX table
 
 ### 3. Documentation ✅
+
 - **PAPER_VISUALIZATION_GUIDE.md**: Comprehensive guide
 - **This file**: Quick reference
 
@@ -21,12 +24,12 @@
 
 ### 📈 Improvements Quantitative
 
-| Metric | Value | Meaning |
-|--------|-------|---------|
+| Metric               | Value        | Meaning                        |
+| -------------------- | ------------ | ------------------------------ |
 | **Channel Variance** | **+197.73%** | Features đa dạng hơn gấp 3 lần |
-| **Sparsity** | **-20.33%** | Activations denser hơn 20% |
-| **FPN Variance** | **+271%** | FPN features improvement |
-| **Max Single Layer** | **+457.68%** | FPN Upsample layer |
+| **Sparsity**         | **-20.33%**  | Activations denser hơn 20%     |
+| **FPN Variance**     | **+271%**    | FPN features improvement       |
+| **Max Single Layer** | **+457.68%** | FPN Upsample layer             |
 
 ### 🔑 Key Evidence
 
@@ -64,9 +67,9 @@ feature_maps_comparison/
 ## 📝 Copy-Paste Cho Abstract
 
 ```
-We propose an optimized YOLOv8 with P2 head, CBAM attention, and SCDown 
-downsampling. Feature map analysis demonstrates 197.73% improvement in 
-channel variance and 20.33% reduction in sparsity, proving significantly 
+We propose an optimized YOLOv8 with P2 head, CBAM attention, and SCDown
+downsampling. Feature map analysis demonstrates 197.73% improvement in
+channel variance and 20.33% reduction in sparsity, proving significantly
 richer and more discriminative representations compared to baseline.
 ```
 
@@ -75,10 +78,12 @@ richer and more discriminative representations compared to baseline.
 ## 📊 Key Numbers Cho Results Section
 
 **In Abstract**:
+
 - +197.73% channel variance
 - -20.33% feature sparsity
 
 **In Results Table**:
+
 - FPN Upsample: +457.68%
 - FPN C2f: +190.26%
 - FPN Concat: +164.74%
@@ -86,6 +91,7 @@ richer and more discriminative representations compared to baseline.
 - Neck C2f: +110.23%
 
 **In Discussion**:
+
 - P2 head: 160×160 (2× resolution)
 - CBAM: 2 attention modules
 - SCDown: Richer features than Conv
@@ -95,25 +101,28 @@ richer and more discriminative representations compared to baseline.
 ## 🖼️ Figure Captions (Copy-Paste Ready)
 
 ### Figure 1 Caption:
+
 ```
-Feature map visualization comparison between baseline YOLOv8 and optimized 
-model (P2+CBAM+SCDown). Left: baseline features. Right: optimized features. 
-The optimized model demonstrates richer and more diverse representations 
-across all layers (jet colormap: red=high, blue=low activation). Layers 
+Feature map visualization comparison between baseline YOLOv8 and optimized
+model (P2+CBAM+SCDown). Left: baseline features. Right: optimized features.
+The optimized model demonstrates richer and more diverse representations
+across all layers (jet colormap: red=high, blue=low activation). Layers
 from top: FPN Upsample, FPN C2f, FPN Concat, Neck Conv/SCDown, Neck C2f.
 ```
 
 ### Figure 2 Caption:
+
 ```
-CBAM attention visualization. (a) Input image. (b) CBAM #1 (layer 19). 
-(c) CBAM #2 (layer 23). Red areas indicate focused attention on object 
+CBAM attention visualization. (a) Input image. (b) CBAM #1 (layer 19).
+(c) CBAM #2 (layer 23). Red areas indicate focused attention on object
 regions, demonstrating adaptive spatial and channel-wise feature refinement.
 ```
 
 ### Figure 4 Caption:
+
 ```
-Quantitative feature quality analysis. Channel variance (↑ better) measures 
-feature diversity. Sparsity (↓ better) measures activation density. Average 
+Quantitative feature quality analysis. Channel variance (↑ better) measures
+feature diversity. Sparsity (↓ better) measures activation density. Average
 improvements: +197.73% variance, -20.33% sparsity across all layers.
 ```
 
@@ -124,14 +133,16 @@ improvements: +197.73% variance, -20.33% sparsity across all layers.
 ### Q: "How do you know optimized model is better?"
 
 **A**: Feature map analysis (Figure 1 & 4):
+
 - **Quantitative**: 197.73% higher channel variance → more diverse features
-- **Quantitative**: 20.33% lower sparsity → denser activations  
+- **Quantitative**: 20.33% lower sparsity → denser activations
 - **Visual**: Clearer patterns and structure in feature maps
 - **Consistent**: All 5 compared layers show improvement
 
 ### Q: "What does CBAM actually do?"
 
 **A**: CBAM visualization (Figure 2):
+
 - **Spatial attention**: Red areas show WHERE model focuses (object regions)
 - **Channel attention**: Emphasizes WHAT features are important
 - **Evidence**: Attention maps align with object locations
@@ -139,7 +150,8 @@ improvements: +197.73% variance, -20.33% sparsity across all layers.
 
 ### Q: "Why P2 head helps?"
 
-**A**: 
+**A**:
+
 - **Resolution**: 160×160 vs baseline 80×80 (2× spatial information)
 - **Small objects**: More pixels per object → better detection
 - **Evidence**: Higher resolution features maintain detail (Figure 1)
@@ -147,6 +159,7 @@ improvements: +197.73% variance, -20.33% sparsity across all layers.
 ### Q: "SCDown vs Conv - what's the difference?"
 
 **A**:
+
 - **Neck_Conv comparison** (Figure 1, row 4): +65.74% variance
 - **SCDown**: Pixel shuffling preserves spatial info
 - **Conv**: Pooling loses information
@@ -157,12 +170,14 @@ improvements: +197.73% variance, -20.33% sparsity across all layers.
 ## 🚀 Next Steps
 
 ### Immediate
+
 - [x] Extract features
 - [x] Generate figures
 - [x] Compute statistics
 - [x] Create visualizations
 
 ### For Paper Writing
+
 - [ ] Copy Figure 1 to Results section
 - [ ] Copy Figure 2 to Methodology section
 - [ ] Copy LaTeX table to Results
@@ -171,6 +186,7 @@ improvements: +197.73% variance, -20.33% sparsity across all layers.
 - [ ] Discuss visual evidence
 
 ### Optional Enhancements
+
 - [ ] Test on more images (run scripts with different IMAGE_PATH)
 - [ ] Add error bars (run on multiple images)
 - [ ] Compare with other baselines (YOLOv5, YOLOv7, etc.)
@@ -181,6 +197,7 @@ improvements: +197.73% variance, -20.33% sparsity across all layers.
 ## 📞 Quick Commands
 
 ### Re-run Everything
+
 ```bash
 cd /home/lqc/Research/Detection/ultralytics
 
@@ -192,13 +209,17 @@ python generate_paper_figures.py
 ```
 
 ### Change Input Image
+
 Edit `feature_map_comparison.py` line ~28:
+
 ```python
 "image_path": "/path/to/your/image.jpg",
 ```
 
 ### Change Layers to Visualize
+
 Edit `feature_map_comparison.py` lines ~34-40:
+
 ```python
 LAYERS_TO_COMPARE = {
     "Your_Layer_Name": {"base": X, "opt": Y, "description": "..."},
@@ -244,15 +265,18 @@ LAYERS_TO_COMPARE = {
 ## 🎯 Paper Checklist
 
 ### Abstract
+
 - [ ] Mention P2 + CBAM + SCDown
 - [ ] State +197.73% variance improvement
 - [ ] State -20.33% sparsity reduction
 
 ### Introduction
+
 - [ ] Motivation for each component (P2, CBAM, SCDown)
 - [ ] Overview of improvements
 
 ### Methodology
+
 - [ ] Describe architecture (with Figure showing layers)
 - [ ] Explain P2 head (160×160 resolution)
 - [ ] Explain CBAM modules (spatial + channel attention)
@@ -260,18 +284,21 @@ LAYERS_TO_COMPARE = {
 - [ ] Explain feature analysis metrics (variance, sparsity)
 
 ### Results
+
 - [ ] Include Figure 1 (comprehensive comparison)
 - [ ] Include Figure 4 or LaTeX table (statistics)
 - [ ] Report all 5 layer improvements
 - [ ] Highlight most dramatic (FPN Upsample +457.68%)
 
 ### Discussion
+
 - [ ] Include Figure 2 (CBAM visualization)
 - [ ] Explain why improvements work
 - [ ] Visual evidence (Figure 1) + Quantitative (Figure 4)
 - [ ] Compare with baseline
 
 ### Conclusion
+
 - [ ] Summarize key contributions
 - [ ] Mention feature quality improvements
 - [ ] State average metrics
@@ -310,6 +337,7 @@ A: Dùng cùng script, thay model paths, tạo comparison table
 ## 🎉 Summary
 
 **Bạn đã có**:
+
 - ✅ 21 feature map visualizations
 - ✅ 4 publication-ready figures
 - ✅ LaTeX table code
@@ -321,6 +349,5 @@ A: Dùng cùng script, thay model paths, tạo comparison table
 
 ---
 
-*Last updated: 2026-01-13*
-*Questions? Check PAPER_VISUALIZATION_GUIDE.md for details*
-
+_Last updated: 2026-01-13_
+_Questions? Check PAPER_VISUALIZATION_GUIDE.md for details_
