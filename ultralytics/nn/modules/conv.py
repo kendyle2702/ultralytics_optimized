@@ -12,6 +12,11 @@ import torch.nn as nn
 __all__ = (
     "CA",
     "CBAM",
+    "ECA",
+    "EMA",
+    "GAM",
+    "SA",
+    "SE",
     "ChannelAttention",
     "Concat",
     "Conv",
@@ -19,16 +24,11 @@ __all__ = (
     "ConvTranspose",
     "DWConv",
     "DWConvTranspose2d",
-    "ECA",
-    "EMA",
     "Focus",
-    "GAM",
     "GhostConv",
     "Index",
     "LightConv",
     "RepConv",
-    "SA",
-    "SE",
     "SimAM",
     "SpatialAttention",
 )
@@ -623,8 +623,8 @@ class CBAM(nn.Module):
 class SE(nn.Module):
     """Squeeze-and-Excitation (SE) attention module.
 
-    Recalibrates channel-wise feature responses by explicitly modelling interdependencies between channels
-    using a bottleneck with two FC layers (implemented as 1x1 convolutions).
+    Recalibrates channel-wise feature responses by explicitly modeling interdependencies between channels using a
+    bottleneck with two FC layers (implemented as 1x1 convolutions).
 
     Attributes:
         avg_pool (nn.AdaptiveAvgPool2d): Global average pooling.
@@ -666,8 +666,8 @@ class SE(nn.Module):
 class ECA(nn.Module):
     """Efficient Channel Attention module.
 
-    Uses 1D convolution instead of FC layers for channel attention, achieving near-zero extra parameters
-    while maintaining performance comparable to SE.
+    Uses 1D convolution instead of FC layers for channel attention, achieving near-zero extra parameters while
+    maintaining performance comparable to SE.
 
     Attributes:
         avg_pool (nn.AdaptiveAvgPool2d): Global average pooling.
@@ -753,7 +753,7 @@ class CA(nn.Module):
             (torch.Tensor): Position-aware attended output tensor.
         """
         identity = x
-        n, c, h, w = x.size()
+        _n, _c, h, w = x.size()
         x_h = self.pool_h(x)
         x_w = self.pool_w(x).permute(0, 1, 3, 2)
 
@@ -771,8 +771,8 @@ class CA(nn.Module):
 class SA(nn.Module):
     """Shuffle Attention module.
 
-    Combines channel attention and spatial attention in a group-wise manner with channel shuffle
-    for efficient cross-group information exchange.
+    Combines channel attention and spatial attention in a group-wise manner with channel shuffle for efficient
+    cross-group information exchange.
 
     Attributes:
         groups (int): Number of sub-feature groups.
@@ -790,8 +790,8 @@ class SA(nn.Module):
 
         Args:
             c1 (int): Number of input channels.
-            groups (int): Number of groups for sub-feature grouping. Default 8 is safe for all YOLOv8 scales
-                (minimum channels 64 at P3/n-scale gives 64//(2*8)=4 > 0).
+            groups (int): Number of groups for sub-feature grouping. Default 8 is safe for all YOLOv8 scales (minimum
+                channels 64 at P3/n-scale gives 64//(2*8)=4 > 0).
         """
         super().__init__()
         self.groups = groups
@@ -806,7 +806,7 @@ class SA(nn.Module):
     @staticmethod
     def channel_shuffle(x, groups):
         """Shuffle channels across groups for cross-group information exchange."""
-        b, c, h, w = x.shape
+        b, _c, h, w = x.shape
         x = x.reshape(b, groups, -1, h, w)
         x = x.permute(0, 2, 1, 3, 4)
         return x.reshape(b, -1, h, w)
@@ -820,7 +820,7 @@ class SA(nn.Module):
         Returns:
             (torch.Tensor): Attention-weighted output tensor.
         """
-        b, c, h, w = x.size()
+        b, _c, h, w = x.size()
         x = x.view(b * self.groups, -1, h, w)
         x_0, x_1 = x.chunk(2, dim=1)
 
@@ -845,8 +845,8 @@ class SA(nn.Module):
 class SimAM(nn.Module):
     """SimAM: A Simple, Parameter-Free Attention Module.
 
-    Computes 3D attention weights based on energy function without any learnable parameters.
-    Particularly effective for feature refinement with zero parameter overhead.
+    Computes 3D attention weights based on energy function without any learnable parameters. Particularly effective for
+    feature refinement with zero parameter overhead.
 
     Attributes:
         e_lambda (float): Small constant for numerical stability.
@@ -875,7 +875,7 @@ class SimAM(nn.Module):
         Returns:
             (torch.Tensor): Attention-weighted output tensor.
         """
-        b, c, h, w = x.size()
+        _b, _c, h, w = x.size()
         n = h * w - 1
         x_minus_mu_square = (x - x.mean(dim=[2, 3], keepdim=True)).pow(2)
         y = x_minus_mu_square / (4 * (x_minus_mu_square.sum(dim=[2, 3], keepdim=True) / n + self.e_lambda)) + 0.5
@@ -885,8 +885,8 @@ class SimAM(nn.Module):
 class GAM(nn.Module):
     """Global Attention Module (GAM).
 
-    Preserves global information by combining a channel attention sub-module (MLP on flattened spatial dims)
-    and a spatial attention sub-module (two large-kernel convolutions), applied sequentially.
+    Preserves global information by combining a channel attention sub-module (MLP on flattened spatial dims) and a
+    spatial attention sub-module (two large-kernel convolutions), applied sequentially.
 
     Attributes:
         linear1 (nn.Linear): First FC of channel attention MLP.
@@ -949,8 +949,8 @@ class GAM(nn.Module):
 class EMA(nn.Module):
     """Efficient Multi-Scale Attention (EMA) module.
 
-    Fuses coordinate attention (1x1 conv on pooled H/W) with a 3x3 conv branch using cross-branch
-    softmax-weighted aggregation inside grouped feature sub-spaces.
+    Fuses coordinate attention (1x1 conv on pooled H/W) with a 3x3 conv branch using cross-branch softmax-weighted
+    aggregation inside grouped feature sub-spaces.
 
     Attributes:
         groups (int): Number of channel groups (sub-spaces).

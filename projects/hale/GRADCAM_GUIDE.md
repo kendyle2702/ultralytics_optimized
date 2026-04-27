@@ -3,9 +3,11 @@
 ## 📚 Giới Thiệu về Grad-CAM
 
 ### Grad-CAM là gì?
+
 **Gradient-weighted Class Activation Mapping (Grad-CAM)** là kỹ thuật visualization giúp hiểu được model CNN "nhìn vào đâu" khi đưa ra quyết định. Nó tạo ra heatmap highlighting các vùng quan trọng trong ảnh.
 
 ### Cách Hoạt Động
+
 1. **Forward pass**: Đưa ảnh qua model, lưu activations của target layers
 2. **Backward pass**: Tính gradient của output score đối với activations
 3. **Weighted combination**: Kết hợp channels với trọng số từ gradients
@@ -15,17 +17,17 @@
 
 ### So Sánh Các Methods
 
-| Method | Cần Gradient? | Tốc độ | Ổn định | Phù hợp Detection? | Khi nào dùng? |
-|--------|--------------|--------|---------|-------------------|---------------|
-| **EigenCAM** ✅ | ❌ Không | ⚡ Nhanh | ✅ Cao | ✅✅✅ Tốt nhất | **RECOMMENDED** cho YOLO |
-| GradCAM | ✅ Có | 🐢 Trung bình | ⚠️ Trung bình | ⚠️ OK | Classification tasks |
-| GradCAM++ | ✅ Có | 🐢 Trung bình | ⚠️ Trung bình | ✅ Tốt | Multiple objects |
-| LayerCAM | ✅ Có | 🐌 Chậm | ⚠️ Thấp | ✅ Tốt | Cần detail cao |
-| HiResCAM | ✅ Có | 🐌🐌 Rất chậm | ⚠️ Thấp | ✅ Tốt | High-res visualization |
+| Method          | Cần Gradient? | Tốc độ        | Ổn định       | Phù hợp Detection? | Khi nào dùng?            |
+| --------------- | ------------- | ------------- | ------------- | ------------------ | ------------------------ |
+| **EigenCAM** ✅ | ❌ Không      | ⚡ Nhanh      | ✅ Cao        | ✅✅✅ Tốt nhất    | **RECOMMENDED** cho YOLO |
+| GradCAM         | ✅ Có         | 🐢 Trung bình | ⚠️ Trung bình | ⚠️ OK              | Classification tasks     |
+| GradCAM++       | ✅ Có         | 🐢 Trung bình | ⚠️ Trung bình | ✅ Tốt             | Multiple objects         |
+| LayerCAM        | ✅ Có         | 🐌 Chậm       | ⚠️ Thấp       | ✅ Tốt             | Cần detail cao           |
+| HiResCAM        | ✅ Có         | 🐌🐌 Rất chậm | ⚠️ Thấp       | ✅ Tốt             | High-res visualization   |
 
 ### Tại Sao EigenCAM?
 
-1. **Không cần gradient** 
+1. **Không cần gradient**
    - Dùng SVD/PCA trên activations
    - Nhanh hơn, ít memory hơn
    - Không bị vanishing/exploding gradients
@@ -43,21 +45,25 @@
 ## 🔧 Các Thông Số Quan Trọng
 
 ### 1. `weight` (string)
+
 - Đường dẫn đến model checkpoint (.pt file)
 - **Ví dụ**: `"/path/to/best.pt"`
 
 ### 2. `conf_threshold` (float, 0-1)
+
 - Ngưỡng confidence để filter detections
 - **Giá trị thấp** (0.1): Detect nhiều objects hơn, có thể nhiều false positives
 - **Giá trị cao** (0.5): Chỉ giữ detections chắc chắn
 - **Recommended**: 0.25 - 0.35 cho general use
 
 ### 3. `method` (string)
+
 - Phương pháp tính CAM
 - **Options**: "EigenCAM", "GradCAM", "GradCAMPlusPlus", "LayerCAM", "HiResCAM"
 - **Recommended**: "EigenCAM" cho YOLO
 
 ### 4. `layer` (list of integers)
+
 - Danh sách indices của layers để extract features
 - **Rất quan trọng!** Chọn sai layers → kết quả kém hoặc OOM error
 
@@ -80,6 +86,7 @@ layer = [12, 15, 18, 19, 23, -3]  # Tất cả các layers quan trọng
 ```
 
 **Nguyên tắc**:
+
 - Layers **càng sâu** (gần head): Semantic-level cao, concepts phức tạp
 - Layers **càng nông** (gần input): Low-level features (edges, textures)
 - **FPN/Neck layers**: Cân bằng giữa semantic và spatial information
@@ -96,41 +103,48 @@ for i, layer in enumerate(model.model.model):
 ```
 
 ### 5. `ratio` (float, 0-1)
+
 - Tỷ lệ top scores để tính gradient
 - **0.02** = top 2% predictions
 - Giảm xuống nếu có ít detections
 - Tăng lên nếu có quá nhiều detections
 
 ### 6. `show_box` (boolean)
+
 - `True`: Vẽ bounding boxes lên heatmap
 - `False`: Chỉ hiển thị heatmap
 - **Recommended**: `True` cho paper (dễ interpret)
 
 ### 7. `renormalize` (boolean)
+
 - `False`: Normalize CAM toàn ảnh (recommended)
 - `True`: Normalize CAM trong từng bounding box riêng biệt
-- **Trade-off**: 
+- **Trade-off**:
   - `False`: Dễ so sánh importance giữa các objects
   - `True`: Mỗi object có detail riêng rõ hơn
 
 ## 🚀 Scripts Có Sẵn
 
 ### 1. `grad_cam_yolov8.py`
+
 - Script cơ bản, display kết quả
 - Tốt để test nhanh
 
 ### 2. `grad_cam_yolov8_optimized.py` ⭐
+
 - Có memory management
 - Verbose output để debug
 - Nhiều layer configs preset
 
 ### 3. `grad_cam_yolov8_save.py` ⭐⭐
+
 - **Recommended cho paper**
 - Save ảnh với quality cao (95%, 300 DPI)
 - Tên file descriptive
 - Dễ config
 
 ### 4. `grad_cam_comparison.py` ⭐⭐⭐
+
 - **Best for research**
 - Tạo nhiều visualizations một lúc
 - So sánh methods và configs
@@ -141,7 +155,7 @@ for i, layer in enumerate(model.model.model):
 ### Cơ Bản
 
 ```python
-from YOLOv8_Explainer import yolov8_heatmap, display_images
+from YOLOv8_Explainer import display_images, yolov8_heatmap
 
 model = yolov8_heatmap(
     weight="best.pt",
@@ -179,13 +193,12 @@ python grad_cam_comparison.py
 
 ```python
 # Thay đổi
-from ultralytics.nn.tasks import attempt_load_weights
 # Thành
-from ultralytics.nn.tasks import load_checkpoint
+from ultralytics.nn.tasks import attempt_load_weights, load_checkpoint
 
 # Và
 model = attempt_load_weights(weight, device)
-# Thành  
+# Thành
 model, ckpt = load_checkpoint(weight, device)
 ```
 
@@ -193,29 +206,31 @@ model, ckpt = load_checkpoint(weight, device)
 
 **Nguyên nhân**: Function đã bị move sang module khác
 
-**Giải pháp**: 
+**Giải pháp**:
+
 ```python
 # Thay đổi
-from ultralytics.utils.ops import non_max_suppression, xywh2xyxy
+
 # Thành
-from ultralytics.utils.nms import non_max_suppression
-from ultralytics.utils.ops import xywh2xyxy
 ```
 
 ### 3. Script Treo Máy / OOM Error
 
-**Nguyên nhân**: 
+**Nguyên nhân**:
+
 - Quá nhiều layers
 - Model quá lớn
 - Insufficient GPU memory
 
 **Giải pháp**:
+
 ```python
 # 1. Giảm số layers
 layer = [-3]  # Thay vì [12, 15, 18, 19, 23, -3]
 
 # 2. Clear cache trước khi chạy
 import torch
+
 torch.cuda.empty_cache()
 
 # 3. Dùng CPU nếu cần
@@ -227,8 +242,10 @@ device = torch.device("cpu")
 **Nguyên nhân**: Layer index không tồn tại
 
 **Giải pháp**: Kiểm tra số layers của model
+
 ```python
 from ultralytics import YOLO
+
 model = YOLO("best.pt")
 print(f"Total layers: {len(model.model.model)}")
 ```
@@ -259,29 +276,32 @@ print(f"Total layers: {len(model.model.model)}")
 ### Caption Template
 
 ```
-Figure X: Grad-CAM visualization of YOLOv8 optimized model. 
-(Left) Original image with detections. 
-(Right) EigenCAM heatmap overlaid with bounding boxes. 
+Figure X: Grad-CAM visualization of YOLOv8 optimized model.
+(Left) Original image with detections.
+(Right) EigenCAM heatmap overlaid with bounding boxes.
 The heatmap highlights regions where the model focuses attention for object detection.
 Red indicates high importance, blue indicates low importance.
-Visualization generated from layers [19, 23, -3] (CBAM attention modules and 
+Visualization generated from layers [19, 23, -3] (CBAM attention modules and
 detection head) using EigenCAM method with confidence threshold 0.25.
 ```
 
 ## 🔬 Hiểu Kết Quả
 
 ### Màu Sắc Heatmap
+
 - **Đỏ/Vàng**: Model chú ý nhiều (important regions)
 - **Xanh/Tím**: Model chú ý ít
 - **Green**: Trung bình
 
 ### Good Visualization Characteristics
+
 ✅ Heatmap tập trung ở objects được detect
 ✅ Boundaries rõ ràng xung quanh objects
 ✅ Background có attention thấp
 ✅ Multiple objects đều có coverage
 
 ### Bad Visualization Signs
+
 ❌ Heatmap lan tỏa khắp ảnh (không specific)
 ❌ Chỉ highlight một phần nhỏ của object
 ❌ High attention ở background noise
@@ -316,6 +336,7 @@ detection head) using EigenCAM method with confidence threshold 0.25.
 ## 📞 Support
 
 Nếu gặp vấn đề:
+
 1. Kiểm tra error message trong troubleshooting section
 2. Verify layer indices với model architecture
 3. Test với minimal configuration
@@ -327,4 +348,3 @@ Nếu gặp vấn đề:
 **Last Updated**: 2026-01-13  
 **Author**: AI Assistant  
 **License**: AGPL-3.0
-

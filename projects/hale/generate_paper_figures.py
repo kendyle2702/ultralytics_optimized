@@ -1,14 +1,14 @@
 """
 Generate Publication-Ready Figures for Paper
-Tổng hợp feature map comparisons thành figures chất lượng cao cho hội nghị khoa học
+Tổng hợp feature map comparisons thành figures chất lượng cao cho hội nghị khoa học.
 """
 
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-import cv2
-import numpy as np
-from pathlib import Path
 import os
+
+import cv2
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
 
 # ===========================================
 # CONFIGURATION
@@ -33,9 +33,9 @@ CBAM_FIGURES = [
     ("07_CBAM_2_mean.jpg", "CBAM Attention #2"),
 ]
 
-print("\n" + "="*80)
-print(" "*20 + "GENERATING PUBLICATION-READY FIGURES")
-print("="*80)
+print("\n" + "=" * 80)
+print(" " * 20 + "GENERATING PUBLICATION-READY FIGURES")
+print("=" * 80)
 
 # ===========================================
 # FIGURE 1: COMPREHENSIVE LAYER COMPARISON
@@ -52,32 +52,33 @@ input_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2RGB)
 
 ax_input = fig.add_subplot(gs[0, :])
 ax_input.imshow(input_img)
-ax_input.set_title('Input Image', fontsize=16, fontweight='bold', pad=20)
-ax_input.axis('off')
+ax_input.set_title("Input Image", fontsize=16, fontweight="bold", pad=20)
+ax_input.axis("off")
 
 # Add main comparisons
 for idx, (filename, title) in enumerate(MAIN_COMPARISONS):
     row = (idx // 2) + 1
     col = idx % 2
-    
+
     img_path = os.path.join(INPUT_DIR, filename)
     if os.path.exists(img_path):
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        
+
         ax = fig.add_subplot(gs[row, col])
         ax.imshow(img)
-        ax.set_title(title, fontsize=14, fontweight='bold')
-        ax.axis('off')
+        ax.set_title(title, fontsize=14, fontweight="bold")
+        ax.axis("off")
 
-fig.suptitle('Feature Map Visualization: YOLOv8 Base vs Optimized (P2+CBAM+SCDown)',
-             fontsize=18, fontweight='bold', y=0.98)
+fig.suptitle(
+    "Feature Map Visualization: YOLOv8 Base vs Optimized (P2+CBAM+SCDown)", fontsize=18, fontweight="bold", y=0.98
+)
 
 output_path = os.path.join(OUTPUT_DIR, "Figure1_Comprehensive_Comparison.png")
-plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+plt.savefig(output_path, dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()
 
-print(f"✅ Saved: Figure1_Comprehensive_Comparison.png")
+print("✅ Saved: Figure1_Comprehensive_Comparison.png")
 
 # ===========================================
 # FIGURE 2: CBAM ATTENTION VISUALIZATION
@@ -90,51 +91,53 @@ fig, axes = plt.subplots(2, 2, figsize=(16, 14))
 # Input image
 ax = axes[0, 0]
 ax.imshow(input_img)
-ax.set_title('(a) Input Image', fontsize=14, fontweight='bold')
-ax.axis('off')
+ax.set_title("(a) Input Image", fontsize=14, fontweight="bold")
+ax.axis("off")
 
 # CBAM visualizations
 for idx, (filename, title) in enumerate(CBAM_FIGURES):
     row = (idx + 1) // 2
     col = (idx + 1) % 2
-    
+
     img_path = os.path.join(INPUT_DIR, filename)
     if os.path.exists(img_path):
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        
+
         ax = axes[row, col]
         ax.imshow(img)
-        letter = chr(ord('b') + idx)
-        ax.set_title(f'({letter}) {title}', fontsize=14, fontweight='bold')
-        ax.axis('off')
+        letter = chr(ord("b") + idx)
+        ax.set_title(f"({letter}) {title}", fontsize=14, fontweight="bold")
+        ax.axis("off")
 
 # Add text explanation
 ax = axes[0, 1]
-ax.text(0.5, 0.5, 
-        'CBAM (Convolutional Block Attention Module)\n\n'
-        'Key Features:\n'
-        '• Spatial attention: WHERE to focus\n'
-        '• Channel attention: WHAT features to emphasize\n'
-        '• Adaptive feature refinement\n'
-        '• Improved small object detection\n\n'
-        'Visualizations show focused attention\n'
-        'on object regions (red = high attention)',
-        transform=ax.transAxes,
-        fontsize=12,
-        verticalalignment='center',
-        horizontalalignment='center',
-        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.3))
-ax.axis('off')
+ax.text(
+    0.5,
+    0.5,
+    "CBAM (Convolutional Block Attention Module)\n\n"
+    "Key Features:\n"
+    "• Spatial attention: WHERE to focus\n"
+    "• Channel attention: WHAT features to emphasize\n"
+    "• Adaptive feature refinement\n"
+    "• Improved small object detection\n\n"
+    "Visualizations show focused attention\n"
+    "on object regions (red = high attention)",
+    transform=ax.transAxes,
+    fontsize=12,
+    verticalalignment="center",
+    horizontalalignment="center",
+    bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.3),
+)
+ax.axis("off")
 
-fig.suptitle('CBAM Attention Module Visualization (Optimized Model)',
-             fontsize=16, fontweight='bold', y=0.98)
+fig.suptitle("CBAM Attention Module Visualization (Optimized Model)", fontsize=16, fontweight="bold", y=0.98)
 
 output_path = os.path.join(OUTPUT_DIR, "Figure2_CBAM_Attention.png")
-plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+plt.savefig(output_path, dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()
 
-print(f"✅ Saved: Figure2_CBAM_Attention.png")
+print("✅ Saved: Figure2_CBAM_Attention.png")
 
 # ===========================================
 # FIGURE 3: GRID VIEW OF ALL METHODS
@@ -144,44 +147,42 @@ print("\n[3/4] Creating Figure 3: Multi-Method Visualization Grid...")
 
 # Select one key layer to show all methods
 selected_layer = "03_FPN_Concat"
-methods = ['mean', 'max', 'grid']
+methods = ["mean", "max", "grid"]
 
 fig, axes = plt.subplots(2, 3, figsize=(18, 12))
 
 # Input image
 ax = axes[0, 0]
 ax.imshow(input_img)
-ax.set_title('(a) Input Image', fontsize=12, fontweight='bold')
-ax.axis('off')
+ax.set_title("(a) Input Image", fontsize=12, fontweight="bold")
+ax.axis("off")
 
 # Hide unused subplots in first row
 for i in range(1, 3):
-    axes[0, i].axis('off')
+    axes[0, i].axis("off")
 
 # Show different visualization methods
 for idx, method in enumerate(methods):
     filename = f"{selected_layer}_{method}.jpg"
     img_path = os.path.join(INPUT_DIR, filename)
-    
+
     if os.path.exists(img_path):
         img = cv2.imread(img_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        
+
         ax = axes[1, idx]
         ax.imshow(img)
-        letter = chr(ord('b') + idx)
-        ax.set_title(f'({letter}) Visualization Method: {method.upper()}', 
-                    fontsize=12, fontweight='bold')
-        ax.axis('off')
+        letter = chr(ord("b") + idx)
+        ax.set_title(f"({letter}) Visualization Method: {method.upper()}", fontsize=12, fontweight="bold")
+        ax.axis("off")
 
-fig.suptitle('Feature Map Visualization Methods - FPN Concat Layer',
-             fontsize=16, fontweight='bold', y=0.98)
+fig.suptitle("Feature Map Visualization Methods - FPN Concat Layer", fontsize=16, fontweight="bold", y=0.98)
 
 output_path = os.path.join(OUTPUT_DIR, "Figure3_Visualization_Methods.png")
-plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+plt.savefig(output_path, dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()
 
-print(f"✅ Saved: Figure3_Visualization_Methods.png")
+print("✅ Saved: Figure3_Visualization_Methods.png")
 
 # ===========================================
 # FIGURE 4: STATISTICS TABLE
@@ -199,42 +200,47 @@ statistics = [
 ]
 
 fig, ax = plt.subplots(figsize=(16, 8))
-ax.axis('tight')
-ax.axis('off')
+ax.axis("tight")
+ax.axis("off")
 
 # Create table
-headers = ['Layer', 'Base\nVariance', 'Opt.\nVariance', 'Variance\nImprovement', 
-           'Base\nSparsity', 'Opt.\nSparsity', 'Sparsity\nChange']
+headers = [
+    "Layer",
+    "Base\nVariance",
+    "Opt.\nVariance",
+    "Variance\nImprovement",
+    "Base\nSparsity",
+    "Opt.\nSparsity",
+    "Sparsity\nChange",
+]
 
 table_data = []
 for stat in statistics:
     layer, base_var, opt_var, var_imp, base_sp, opt_sp, sp_change = stat
-    table_data.append([
-        layer,
-        f'{base_var:.4f}',
-        f'{opt_var:.4f}',
-        f'{var_imp:+.2f}%',
-        f'{base_sp:.4f}',
-        f'{opt_sp:.4f}',
-        f'{sp_change:+.2f}%'
-    ])
+    table_data.append(
+        [
+            layer,
+            f"{base_var:.4f}",
+            f"{opt_var:.4f}",
+            f"{var_imp:+.2f}%",
+            f"{base_sp:.4f}",
+            f"{opt_sp:.4f}",
+            f"{sp_change:+.2f}%",
+        ]
+    )
 
 # Add summary row
 avg_var_imp = np.mean([s[3] for s in statistics])
 avg_sp_change = np.mean([s[6] for s in statistics])
-table_data.append([
-    'AVERAGE',
-    '-',
-    '-',
-    f'{avg_var_imp:+.2f}%',
-    '-',
-    '-',
-    f'{avg_sp_change:+.2f}%'
-])
+table_data.append(["AVERAGE", "-", "-", f"{avg_var_imp:+.2f}%", "-", "-", f"{avg_sp_change:+.2f}%"])
 
-table = ax.table(cellText=table_data, colLabels=headers,
-                cellLoc='center', loc='center',
-                colWidths=[0.15, 0.12, 0.12, 0.15, 0.12, 0.12, 0.14])
+table = ax.table(
+    cellText=table_data,
+    colLabels=headers,
+    cellLoc="center",
+    loc="center",
+    colWidths=[0.15, 0.12, 0.12, 0.15, 0.12, 0.12, 0.14],
+)
 
 table.auto_set_font_size(False)
 table.set_fontsize(11)
@@ -243,48 +249,54 @@ table.scale(1, 2.5)
 # Style the header
 for i in range(len(headers)):
     cell = table[(0, i)]
-    cell.set_facecolor('#4472C4')
-    cell.set_text_props(weight='bold', color='white')
+    cell.set_facecolor("#4472C4")
+    cell.set_text_props(weight="bold", color="white")
 
 # Style the data rows
 for i in range(1, len(table_data) + 1):
     for j in range(len(headers)):
         cell = table[(i, j)]
         if i == len(table_data):  # Summary row
-            cell.set_facecolor('#FFC000')
-            cell.set_text_props(weight='bold')
+            cell.set_facecolor("#FFC000")
+            cell.set_text_props(weight="bold")
         elif i % 2 == 0:
-            cell.set_facecolor('#D9E2F3')
-        
+            cell.set_facecolor("#D9E2F3")
+
         # Highlight improvements
         if j == 3:  # Variance improvement column
-            val = float(table_data[i-1][j].strip('%+'))
+            val = float(table_data[i - 1][j].strip("%+"))
             if val > 100:
-                cell.set_text_props(color='green', weight='bold')
+                cell.set_text_props(color="green", weight="bold")
         elif j == 6:  # Sparsity change column
-            val = float(table_data[i-1][j].strip('%+'))
+            val = float(table_data[i - 1][j].strip("%+"))
             if val < 0:  # Negative sparsity is good
-                cell.set_text_props(color='green', weight='bold')
+                cell.set_text_props(color="green", weight="bold")
 
 # Add title and explanations
-title_text = 'Quantitative Feature Map Analysis: Base vs Optimized Model'
-plt.text(0.5, 0.95, title_text, transform=fig.transFigure,
-         ha='center', fontsize=16, fontweight='bold')
+title_text = "Quantitative Feature Map Analysis: Base vs Optimized Model"
+plt.text(0.5, 0.95, title_text, transform=fig.transFigure, ha="center", fontsize=16, fontweight="bold")
 
 explanation = (
-    'Channel Variance: Higher values indicate more diverse features (↑ Better)\n'
-    'Sparsity: Lower values indicate denser, more informative activations (↓ Better)\n'
-    'Key Finding: Optimized model shows 197.73% higher variance and 20.33% lower sparsity on average'
+    "Channel Variance: Higher values indicate more diverse features (↑ Better)\n"
+    "Sparsity: Lower values indicate denser, more informative activations (↓ Better)\n"
+    "Key Finding: Optimized model shows 197.73% higher variance and 20.33% lower sparsity on average"
 )
-plt.text(0.5, 0.08, explanation, transform=fig.transFigure,
-         ha='center', fontsize=10, style='italic',
-         bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.5))
+plt.text(
+    0.5,
+    0.08,
+    explanation,
+    transform=fig.transFigure,
+    ha="center",
+    fontsize=10,
+    style="italic",
+    bbox=dict(boxstyle="round", facecolor="lightyellow", alpha=0.5),
+)
 
 output_path = os.path.join(OUTPUT_DIR, "Figure4_Statistics_Table.png")
-plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
+plt.savefig(output_path, dpi=300, bbox_inches="tight", facecolor="white")
 plt.close()
 
-print(f"✅ Saved: Figure4_Statistics_Table.png")
+print("✅ Saved: Figure4_Statistics_Table.png")
 
 # ===========================================
 # GENERATE LATEX TABLE
@@ -294,7 +306,7 @@ print("\n[Bonus] Generating LaTeX table...")
 
 latex_output = os.path.join(OUTPUT_DIR, "statistics_table.tex")
 
-with open(latex_output, 'w') as f:
+with open(latex_output, "w") as f:
     f.write("% LaTeX table for paper\n")
     f.write("\\begin{table}[htbp]\n")
     f.write("\\centering\n")
@@ -302,32 +314,38 @@ with open(latex_output, 'w') as f:
     f.write("\\label{tab:feature_statistics}\n")
     f.write("\\begin{tabular}{lccccccc}\n")
     f.write("\\hline\n")
-    f.write("\\textbf{Layer} & \\multicolumn{3}{c}{\\textbf{Channel Variance}} & \\multicolumn{3}{c}{\\textbf{Sparsity}} \\\\\n")
+    f.write(
+        "\\textbf{Layer} & \\multicolumn{3}{c}{\\textbf{Channel Variance}} & \\multicolumn{3}{c}{\\textbf{Sparsity}} \\\\\n"
+    )
     f.write("\\cline{2-7}\n")
     f.write(" & Base & Opt. & Improvement & Base & Opt. & Change \\\\\n")
     f.write("\\hline\n")
-    
+
     for stat in statistics:
         layer, base_var, opt_var, var_imp, base_sp, opt_sp, sp_change = stat
-        f.write(f"{layer.replace('_', ' ')} & {base_var:.4f} & {opt_var:.4f} & "
-               f"+{var_imp:.2f}\\% & {base_sp:.4f} & {opt_sp:.4f} & {sp_change:+.2f}\\% \\\\\n")
-    
+        f.write(
+            f"{layer.replace('_', ' ')} & {base_var:.4f} & {opt_var:.4f} & "
+            f"+{var_imp:.2f}\\% & {base_sp:.4f} & {opt_sp:.4f} & {sp_change:+.2f}\\% \\\\\n"
+        )
+
     f.write("\\hline\n")
-    f.write(f"\\textbf{{Average}} & - & - & \\textbf{{+{avg_var_imp:.2f}\\%}} & "
-           f"- & - & \\textbf{{{avg_sp_change:+.2f}\\%}} \\\\\n")
+    f.write(
+        f"\\textbf{{Average}} & - & - & \\textbf{{+{avg_var_imp:.2f}\\%}} & "
+        f"- & - & \\textbf{{{avg_sp_change:+.2f}\\%}} \\\\\n"
+    )
     f.write("\\hline\n")
     f.write("\\end{tabular}\n")
     f.write("\\end{table}\n")
 
-print(f"✅ Saved: statistics_table.tex")
+print("✅ Saved: statistics_table.tex")
 
 # ===========================================
 # SUMMARY
 # ===========================================
 
-print("\n" + "="*80)
+print("\n" + "=" * 80)
 print("SUMMARY")
-print("="*80)
+print("=" * 80)
 
 print(f"\n📁 Output directory: {OUTPUT_DIR}")
 print("\n📊 Generated figures:")
@@ -345,14 +363,13 @@ print("   • Figure 4: Quantitative results")
 print("   • LaTeX table: Copy into your paper source")
 
 print("\n📝 CAPTION TEMPLATE:")
-print('''
+print("""
 Figure 1: Feature map visualization comparison between baseline YOLOv8 and 
 optimized model (P2+CBAM+SCDown). Left column shows baseline features, right 
 column shows optimized model features. The optimized model demonstrates richer 
 and more diverse feature representations across all layers (indicated by 
 higher variance and denser activations). Visualizations use mean aggregation 
 across channels with jet colormap (red=high activation, blue=low activation).
-''')
+""")
 
-print("\n" + "="*80 + "\n")
-
+print("\n" + "=" * 80 + "\n")
